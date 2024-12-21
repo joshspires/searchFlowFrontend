@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../Layout/MainLayout";
 import WebsiteCard from "../components/WebsiteCard";
+import { getDashboardData } from "../apiManager/webflow";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
-  
+  const [loading, setLoading] = useState(false);
+  const userId = useSelector((state) => state.auth.userInfo.data.userId);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await getDashboardData(userId);
+        console.log(data);
+      } catch (error) {
+        alert(error.response.data.message || "error occured while fetching the data")
+      } finally {
+        setLoading(false);
+      }
+    })()
+  },[])
+
+  if (loading) return <div>loading...</div>
   return (
     <MainLayout>
       <div className="space-y-8">
