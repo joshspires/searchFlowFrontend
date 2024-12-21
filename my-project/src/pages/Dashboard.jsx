@@ -6,22 +6,27 @@ import { useSelector } from "react-redux";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const userId = useSelector((state) => state.auth.userInfo.data.userId);
+
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const data = await getDashboardData(userId);
-        console.log(data);
+        const res = await getDashboardData(userId);
+        setData(res.data); // Set data from the response
       } catch (error) {
-        alert(error.response.data.message || "error occured while fetching the data")
+        alert(
+          error.response?.data?.message || "Error occurred while fetching the data"
+        );
       } finally {
         setLoading(false);
       }
-    })()
-  },[])
+    })();
+  }, []);
 
-  if (loading) return <div>loading...</div>
+  if (loading) return <div>Loading...</div>;
+
   return (
     <MainLayout>
       <div className="space-y-8">
@@ -35,20 +40,16 @@ export default function Dashboard() {
 
         {/* Website Cards */}
         <div className="grid grid-cols-3 gap-6 max-md:grid-cols-1">
-          <WebsiteCard
-            name="Website #1 Name"
-            lastSync="5 hours ago"
-            collections="12"
-            items="340"
-            products="45"
-          />
-          <WebsiteCard
-            name="Website #2 Name"
-            lastSync="2 hours ago"
-            collections="10"
-            items="250"
-            products="30"
-          />
+          {data.map((website, index) => (
+            <WebsiteCard
+              key={index} // Unique key for each card
+              name={website.websiteName}
+              lastSync={new Date(website.lastSync).toLocaleString()} // Format date
+              collections={website.totalCollections}
+              items={website.totalItems}
+              products={website.totalProducts}
+            />
+          ))}
         </div>
       </div>
     </MainLayout>
