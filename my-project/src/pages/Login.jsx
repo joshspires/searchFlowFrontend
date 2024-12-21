@@ -92,11 +92,7 @@ export default function Login() {
     } finally {
       setIsForgotLoading(false);
     }
-  };
-
-  const handleRegisterClick = () => {
-    navigate("/signup");
-  };
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -106,7 +102,12 @@ export default function Login() {
         )}
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">searchFlow</h2>
         <p className="text-sm text-center text-gray-600 mb-6">
-          Don't have an account? Create one now.
+          Don't have an account? {" "}<span
+        onClick={() => navigate("/signup")}
+        className="text-blue-500 hover:underline cursor-pointer"
+      >
+        Create one now.
+      </span>
         </p>
 
         <div className="mb-4">

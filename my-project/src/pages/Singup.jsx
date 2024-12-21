@@ -52,7 +52,12 @@ export default function Signup() {
 
         {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">searchFlow</h2>
-        <p className="text-sm text-center text-gray-600 mb-6">Already have an account? Login.</p>
+        <p className="text-sm text-center text-gray-600 mb-6">Already have an account? {" "}
+          <span
+        onClick={() => navigate("/login")}
+        className="text-blue-500 hover:underline cursor-pointer"
+      >Login</span>
+          .</p>
 
         {/* Email Field */}
         <div className="mb-4">
