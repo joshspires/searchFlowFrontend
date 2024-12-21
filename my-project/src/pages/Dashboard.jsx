@@ -3,6 +3,7 @@ import MainLayout from "../Layout/MainLayout";
 import WebsiteCard from "../components/WebsiteCard";
 import { getDashboardData } from "../apiManager/webflow";
 import { useSelector } from "react-redux";
+import Loader from "../common/Loader";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function Dashboard() {
     })();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
 
   return (
     <MainLayout>
