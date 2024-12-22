@@ -44,8 +44,7 @@ const ResetPassword = () => {
        alert(res.message || "Failed to reset password.");
         return;
       }
-      alert(res.message || "Password reset successfully!");
-      dispatch(setCredentials({ ...res }));
+      // dispatch(setCredentials({ ...res }));
       navigate("/login"); // Redirect to login page after success
     } catch (err) {
       setError(err.response.data.message || "An error occurred. Please try again.");
