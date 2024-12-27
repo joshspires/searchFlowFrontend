@@ -18,20 +18,19 @@ export default function Login() {
   const [forgotSuccess, setForgotSuccess] = useState("");
   const [isForgotLoading, setIsForgotLoading] = useState(false);
 
-
   const { userInfo } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (userInfo) {
-      if (!userInfo.data.isEmailVerified) {
-        navigate("/verify-email");
-      } else if (userInfo.data.webflowAccessToken == null) {
-        navigate("/connect-webflow");
-      } else{
-        navigate("/dashboard");
-      }
-    }
-  }, [userInfo, navigate]);
+  // useEffect(() => {
+  //   if (userInfo) {
+  //     if (!userInfo.data.isEmailVerified) {
+  //       navigate("/verify-email");
+  //     } else if (userInfo.data.webflowAccessToken == null) {
+  //       navigate("/connect-webflow");
+  //     } else{
+  //       navigate("/dashboard");
+  //     }
+  //   }
+  // }, [userInfo, navigate]);
 
   const validateInputs = () => {
     const newErrors = {};
@@ -87,12 +86,13 @@ export default function Login() {
       setForgotSuccess(res.message);
     } catch (error) {
       setForgotError(
-        error.message || "An error occurred while resetting the password. Please try again."
+        error.message ||
+          "An error occurred while resetting the password. Please try again."
       );
     } finally {
       setIsForgotLoading(false);
     }
-};
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -100,14 +100,17 @@ export default function Login() {
         {errors.apiError && (
           <p className="text-red-500 text-center mb-4">{errors.apiError}</p>
         )}
-        <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">searchFlow</h2>
+        <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
+          searchFlow
+        </h2>
         <p className="text-sm text-center text-gray-600 mb-6">
-          Don't have an account? {" "}<span
-        onClick={() => navigate("/signup")}
-        className="text-blue-500 hover:underline cursor-pointer"
-      >
-        Create one now.
-      </span>
+          Don't have an account?{" "}
+          <span
+            onClick={() => navigate("/signup")}
+            className="text-blue-500 hover:underline cursor-pointer"
+          >
+            Create one now.
+          </span>
         </p>
 
         <div className="mb-4">
@@ -122,7 +125,9 @@ export default function Login() {
             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="Enter your email"
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -137,7 +142,9 @@ export default function Login() {
             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="Enter your password"
           />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
         </div>
 
         <div className="text-right mb-6">
@@ -171,7 +178,9 @@ export default function Login() {
               onChange={(e) => setForgotEmail(e.target.value)}
               placeholder="Enter your email"
               className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 ${
-                forgotError ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+                forgotError
+                  ? "border-red-500 focus:ring-red-500"
+                  : "focus:ring-blue-500"
               }`}
             />
             {forgotError && (
