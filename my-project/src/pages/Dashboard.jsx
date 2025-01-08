@@ -8,7 +8,7 @@ import Loader from "../common/Loader";
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const userId = useSelector((state) => state.auth.userInfo.data.userId);
+  const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
 
   useEffect(() => {
     (async () => {
@@ -18,7 +18,8 @@ export default function Dashboard() {
         setData(res.data); // Set data from the response
       } catch (error) {
         alert(
-          error.response?.data?.message || "Error occurred while fetching the data"
+          error.response?.data?.message ||
+            "Error occurred while fetching the data"
         );
       } finally {
         setLoading(false);

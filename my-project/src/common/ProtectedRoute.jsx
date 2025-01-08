@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   //   return <Navigate to="/" replace />;
   // }
 
-  // if (userInfo && !userInfo.data.isEmailVerified){
+  // if (userInfo && !userInfo.data.isEmailVerified) {
   //   return <Navigate to="/verify-email" replace />;
   // }
 

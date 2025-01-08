@@ -1,6 +1,13 @@
 import React from "react";
+import { useFormContext } from "react-hook-form";
+import { collections, searchConfiguration } from "../../../../demo";
 
 const WebsiteSettingsGernal = () => {
+  const { register, getValues, setValue, watch } = useFormContext({
+    values: {
+      ...searchConfiguration,
+    },
+  });
   return (
     <div className="flex flex-wrap gap-6 p-3 ">
       {/* Left Section */}
@@ -13,22 +20,34 @@ const WebsiteSettingsGernal = () => {
           <div>
             <h3 className="text-md font-medium mb-2">Collections</h3>
             <div className="space-y-2">
-              <div>
-                <input type="checkbox" id="collection1" className="mr-2" />
-                <label htmlFor="collection1">Collection #1 name</label>
-              </div>
-              <div>
-                <input type="checkbox" id="collection2" className="mr-2" />
-                <label htmlFor="collection2">Collection #2 name</label>
-              </div>
-              <div>
-                <input type="checkbox" id="collection3" className="mr-2" />
-                <label htmlFor="collection3">Collection #3 name</label>
-              </div>
-              <div>
-                <input type="checkbox" id="collection4" className="mr-2" />
-                <label htmlFor="collection4">Collection #4 name</label>
-              </div>
+              {collections.map((item) => (
+                <div key={item._id}>
+                  <input
+                    type="checkbox"
+                    id={item._id}
+                    className="mr-2"
+                    checked={watch("searchFrom.collections")?.includes(
+                      item._id
+                    )}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setValue("collections", [
+                          ...getValues("collections"),
+                          item._id,
+                        ]); // Add the ID
+                      } else {
+                        setValue(
+                          "collections",
+                          getValues("collections").filter(
+                            (id) => id !== item._id
+                          ) // Remove the ID
+                        );
+                      }
+                    }}
+                  />
+                  <label htmlFor={item._id}>{item.displayName}</label>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -36,7 +55,15 @@ const WebsiteSettingsGernal = () => {
           <div>
             <h3 className="text-md font-medium mb-2">Pages</h3>
             <div>
-              <input type="checkbox" id="allPages" className="mr-2" />
+              <input
+                type="checkbox"
+                id="allPages"
+                className="mr-2"
+                checked={watch("searchFrom.allPages")}
+                onChange={(e) => {
+                  setValue("searchFrom.allPages", e.target.checked);
+                }}
+              />
               <label htmlFor="allPages">All pages</label>
             </div>
           </div>
@@ -47,7 +74,15 @@ const WebsiteSettingsGernal = () => {
               Products {"{website name}"}
             </h3>
             <div>
-              <input type="checkbox" id="allProducts" className="mr-2" />
+              <input
+                type="checkbox"
+                id="allProducts"
+                className="mr-2"
+                checked={watch("searchFrom.allProducts")}
+                onChange={(e) => {
+                  setValue("searchFrom.allProducts", e.target.checked);
+                }}
+              />
               <label htmlFor="allProducts">All products</label>
             </div>
           </div>
@@ -65,6 +100,10 @@ const WebsiteSettingsGernal = () => {
               id="fuzzySearch"
               className="mr-2 h-5 w-5 text-green-500 focus:ring-0 focus:ring-offset-0"
               defaultChecked
+              checked={watch("searchEngineSettings.fuzzySearch")}
+              onChange={(e) => {
+                setValue("searchEngineSettings.fuzzySearch", e.target.checked);
+              }}
             />
             <label htmlFor="fuzzySearch" className="text-md font-medium">
               Fuzzy search
@@ -75,7 +114,13 @@ const WebsiteSettingsGernal = () => {
               type="checkbox"
               id="instantSearch"
               className="mr-2 h-5 w-5 text-green-500 focus:ring-0 focus:ring-offset-0"
-              defaultChecked
+              checked={watch("searchEngineSettings.instantSearchWidget")}
+              onChange={(e) => {
+                setValue(
+                  "searchEngineSettings.instantSearchWidget",
+                  e.target.checked
+                );
+              }}
             />
             <label htmlFor="instantSearch" className="text-md font-medium">
               Instant search widget
