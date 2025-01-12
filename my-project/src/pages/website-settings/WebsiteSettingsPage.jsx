@@ -15,6 +15,8 @@ const WebsiteSettingsPage = () => {
       ...searchConfiguration,
     },
   });
+  console.log("searchConfiguration", searchConfiguration);
+
 
   const getAndSetCollections = async () => {
     const collections = await axios.get("");
@@ -34,7 +36,9 @@ const WebsiteSettingsPage = () => {
           <SearchPageConf />
         </FormProvider>
       </div>
-    </MainLayout>
+      <button onClick={() => { console.log(searchConfiguration); }
+      }>save</button>
+    </MainLayout >
   );
 };
 
