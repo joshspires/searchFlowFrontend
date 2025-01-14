@@ -1,151 +1,287 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useFormContext, useWatch } from "react-hook-form";
+import NoResultsLayoutSettings from "./NoResultWidget";
 
 const ITEM_TYPE = "ITEM";
 
 const layoutOptions = [
-  { id: "oneTab", label: "One tab" },
-  { id: "twoTabs", label: "Two tabs" },
-  { id: "threeTabs", label: "Three tabs" },
+  { id: "one-tab", label: "One tab" },
+  { id: "two-tabs", label: "Two tabs" },
+  { id: "three-tabs", label: "Three tabs" },
 ];
-
 const SearchPageConf = () => {
-  const [columns, setColumns] = useState({
-    searchResults: {
-      products: ["Collect #1", "Collect #4", "Collect #2", "Collect #5"],
-      blog: ["Products"],
-      guides: ["Collect #5", "Collect #3"],
-    },
-    noResults: {
-      suggestedTerms: ["Search term 1", "Search term 2", "Search term 3", "Search term 4", "Search term 5"],
-      sectionOne: ["collection#1", "collection#2", "collection#3", "collection#4", "Search term 5"],
-    },
-    searchItems: {
-      sectionOne: ["Product #1", "Product #4", "Product #2", "Product #5"],
-      sectionTwo: ["Collect #1", "Collect #4", "Collect #2", "Collect #5"],
-    },
-  });
+  const { getValues, setValue, control } = useFormContext();
+  const ordering = useWatch({ control, name: "searchResultPageCustomization.noResultOrdering" }); // Watch for changes in "ordering"
 
-  const moveItem = (source, destination) => {
-    const { sourceColumn, sourceSection, sourceIndex } = source;
-    const { destColumn, destSection, destIndex } = destination;
+  const searchResultContentOrdering = useWatch({ control, name: "searchResultPageCustomization.searchResultContentOrdering" }); // Watch for changes in "ordering"
 
-    if (
-      sourceColumn === destColumn &&
-      sourceSection === destSection &&
-      sourceIndex === destIndex
-    ) {
-      return;
-    }
 
-    const updatedColumns = { ...columns };
-    const sourceItems = [...updatedColumns[sourceColumn][sourceSection]];
-    const [movedItem] = sourceItems.splice(sourceIndex, 1);
+  const searchResultLayout = useWatch({
+    control,
+    name: "searchResultPageCustomization.searchResultLayout",
+  }); // Watch for changes in "searchResultLayout"
 
-    if (sourceColumn === destColumn && sourceSection === destSection) {
-      sourceItems.splice(destIndex, 0, movedItem);
-      updatedColumns[sourceColumn][sourceSection] = sourceItems;
-    } else {
-      const destItems = [...updatedColumns[destColumn][destSection]];
-      destItems.splice(destIndex, 0, movedItem);
-      updatedColumns[sourceColumn][sourceSection] = sourceItems;
-      updatedColumns[destColumn][destSection] = destItems;
-    }
-
-    setColumns(updatedColumns);
+  const handleLayoutChange = (layout) => {
+    setValue(
+      "searchResultPageCustomization.searchResultLayout",
+      layout,
+      { shouldValidate: true, shouldDirty: true }
+    );
   };
 
+  const moveItem = (source, destination) => {
+    const { sourceColumn, sourceSection, sourceId } = source;
+    const { destColumn, destSection, destIndex } = destination;
+
+    // Clone current ordering
+    const updatedOrdering = [...getValues("searchResultPageCustomization.noResultOrdering")];
+
+    // Find and remove the source item
+    const itemIndex = updatedOrdering.findIndex(
+      (item) =>
+        item.column === sourceColumn &&
+        item.section === sourceSection &&
+        item.id === sourceId
+    );
+    const [movedItem] = updatedOrdering.splice(itemIndex, 1);
+
+    // Update the moved item's column and section
+    movedItem.column = destColumn;
+    movedItem.section = destSection;
+
+    // Insert the item at the destination index
+    updatedOrdering.splice(destIndex, 0, movedItem);
+
+    // Reorder items
+    const reorder = (items) =>
+      items.map((item, index) => ({ ...item, order: index + 1 }));
+    const grouped = updatedOrdering.reduce((acc, item) => {
+      const key = `${item.column}-${item.section}`;
+      acc[key] = acc[key] || [];
+      acc[key].push(item);
+      return acc;
+    }, {});
+    const reordered = Object.values(grouped).flatMap(reorder);
+
+    // Update form state
+    setValue("searchResultPageCustomization.noResultOrdering", reordered, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const getItems = (column, section) =>
+    ordering
+      ? ordering.filter((item) => item.column === column && item.section === section)
+        .sort((a, b) => a.order - b.order) : [];
+
+
+  const moveTabItem = (source, destination) => {
+
+    const { sourceTab, sourceColumn, sourceId } = source;
+    const { destSection, destColumn, destIndex } = destination;
+
+    // Clone current ordering
+    const updatedOrdering = [...getValues("searchResultPageCustomization.searchResultContentOrdering")];
+
+    // Find and remove the source item
+    const itemIndex = updatedOrdering.findIndex(
+      (item) =>
+        item.tab === sourceTab &&
+        item.column === sourceColumn &&
+        item.id === sourceId
+    );
+    const [movedItem] = updatedOrdering.splice(itemIndex, 1);
+
+    // Update the moved item's tab and column
+    movedItem.tab = destSection;
+    movedItem.column = destColumn;
+
+    // Insert the item at the destination index
+    updatedOrdering.splice(destIndex, 0, movedItem);
+
+    // Reorder items
+    const reorder = (items) =>
+      items.map((item, index) => ({ ...item, order: index + 1 }));
+    const grouped = updatedOrdering.reduce((acc, item) => {
+      const key = `${item.tab}-${item.column}`;
+      acc[key] = acc[key] || [];
+      acc[key].push(item);
+      return acc;
+    }, {});
+    const reordered = Object.values(grouped).flatMap(reorder);
+
+    // Update form state
+    setValue("searchResultPageCustomization.searchResultContentOrdering", reordered, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const getTabItems = (tab, column) =>
+    searchResultContentOrdering
+      ? searchResultContentOrdering
+        .filter((item) => item.tab === tab && item.column === column)
+        .sort((a, b) => a.order - b.order)
+      : [];
+
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-black justify-between rounded-lg m-2">
-        <div className="w-full">
-          <h2 className="text-lg font-bold mb-4">Search results page</h2>
-          <div className="mx-2">
-            <h3 className="text-base font-semibold mb-2">Search results layout</h3>
-            <div className="space-y-1">
-              {layoutOptions.map(({ id, label }) => (
-                <Checkbox key={id} id={id} label={label} />
-              ))}
-            </div>
+    <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-black justify-between rounded-xl m-2">
+      {/* left section */}
+      <div className="w-full">
+        <h2 className="text-lg font-bold mb-4">Search results page</h2>
+        <div className="mx-2">
+          <h3 className="text-base font-semibold mb-2">Search results layout</h3>
+          {/* check Box section  */}
+          {/* check Box section  */}
+          <div className="space-y-1">
+            {layoutOptions.map(({ id, label }) => (
+              <div key={id} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id={id}
+                  checked={searchResultLayout === id || false}  // Ensure it's always boolean
+                  onChange={() => handleLayoutChange(id)}
+                  className="cursor-pointer accent-black"
+                />
+
+                <label htmlFor={id} className="text-sm cursor-pointer">
+                  {label}
+                </label>
+              </div>
+            ))}
           </div>
-          <div className="space-y-6 mx-2 mt-2">
-            <div>
-              <h3 className="text-md font-medium mb-2">Search results content ordering</h3>
-              <div className="flex justify-between mx-auto border rounded-lg border-black">
-                {Object.entries(columns.searchResults).map(([sectionName, items], index, array) => (
-                  <Section
-                    key={sectionName}
-                    columnName="searchResults"
-                    sectionName={sectionName}
-                    items={items}
-                    moveItem={moveItem}
-                    isLast={index === array.length - 1}
-                    borderTop={true}
-                  />
+
+        </div>
+        <div className="space-y-6 mx-2 mt-2">
+          <div>
+            <h3 className="text-md font-medium mb-2">Search results content ordering</h3>
+            <div className="flex flex-col mt-5 w-full mx-auto border-black rounded-xl">
+              {/* Tabs Section */}
+              <div className="flex  justify-between border-gray-300">
+                {["tabOne", "tabTwo", "tabThree"].map((tabName) => (
+                  <div
+                    key={tabName}
+                    className="px-2 mx-4 text-sm font-semibold py-1 cursor-pointer hover:bg-gray-200 font-semibold"
+                  >
+                    {formatName(tabName)}
+                  </div>
                 ))}
+              </div>
+
+              {/* Main Content Section */}
+              <div className="flex w-full border rounded-xl border-black">
+                {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => {
+                  // Map columns to sections
+                  const sectionName = ["tabOne", "tabTwo", "tabThree"][index];
+
+                  return (
+                    <div
+                      key={columnName}
+                      className={`flex flex-col w-full ${index !== 2 ? "border-r border-black" : ""}`}
+                    >
+                      <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
+                      <div className="flex-1 border-t border-black">
+                        <Section
+                          key={`${columnName}-${sectionName}`}
+                          columnName={columnName}
+                          sectionName={sectionName}
+                          items={getTabItems(sectionName, columnName)} // Get items specific to tab and column
+                          moveItem={moveTabItem} // Use the moveTabItem function
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
-        <div className="md:mt-6  flex flex-col gap-2 mx-2 md:ml-0 w-full">
-          <div className="mb-3 flex flex-col gap-3">
-            <h3 className="text- font-semibold mb-1">No results content ordering</h3>
-            <Checkbox label={"Suggested search terms"} />
-            <h3 className="text- font-semibold mb-1">Search results content ordering</h3>
-            <Checkbox label={"Use the most popular searches for search terms"} />
+      </div>
+      {/* Right section */}
+      <div className="md:mt-6 flex flex-col gap-2 mx-2 md:ml-0 w-full">
+        <div className="mb-3 flex flex-col gap-3">
+          <h3 className="text- font-semibold mb-1">No results content ordering</h3>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="suggestedSearchTerms"
+              className="accent-black"
+              checked={useWatch({ control, name: "searchResultPageCustomization.suggestedSearchTerms" }) || false}  // Ensure it's boolean
+              onChange={(e) =>
+                setValue(
+                  "searchResultPageCustomization.suggestedSearchTerms",
+                  e.target.checked,
+                  { shouldValidate: true, shouldDirty: true }
+                )
+              }
+            />
+
+            <label htmlFor="suggestedSearchTerms" className="text-sm">
+              Suggested search terms
+            </label>
           </div>
-          <ContentOrdering
-            columns={columns.noResults}
-            moveItem={moveItem}
-            columnName="noResults"
-          />
-          <ContentOrdering
-            columns={columns.searchItems}
-            moveItem={moveItem}
-            columnName="searchItems"
-          />
+
+          <h3 className="text- font-semibold mb-1">Search results content ordering</h3>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="accent-black"
+              id="popularSearchTerms"
+              checked={useWatch({ control, name: "searchResultPageCustomization.popularSearchTerms" }) || false}  // Ensure it's boolean
+              onChange={(e) =>
+                setValue(
+                  "searchResultPageCustomization.popularSearchTerms",
+                  e.target.checked,
+                  { shouldValidate: true, shouldDirty: true }
+                )
+              }
+            />
+            <label htmlFor="popularSearchTerms" className="text-sm">
+              Use the most popular searches for search terms
+            </label>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 mt-5  w-full gap-4 mx-auto border-black rounded-xl">
+          {["columnOne", "columnTwo"].map((columnName) => (
+            <div key={columnName} className="flex flex-col w-full">
+              <h2 className="font-semibold hidden px-2 py-2">{formatName(columnName)}</h2>
+              <div className="flex-1 border rounded-xl border-black">
+                {["SuggestedTerms", "sectionOne", "sectionTwo"]
+                  .filter((sectionName) => {
+                    // Show only "SuggestedTerms" in columnOne
+                    if (columnName === "columnOne") {
+                      return sectionName === "SuggestedTerms";
+                    }
+                    // Show "sectionOne" and "sectionTwo" in columnTwo
+                    if (columnName === "columnTwo") {
+                      return sectionName === "sectionOne" || sectionName === "sectionTwo";
+                    }
+                    return false;
+                  })
+                  .map((sectionName) => (
+                    <Section
+                      key={`${columnName}-${sectionName}`}
+                      columnName={columnName}
+                      sectionName={sectionName}
+                      items={getItems(columnName, sectionName)}
+                      moveItem={moveItem}
+                    />
+                  ))}
+              </div>
+            </div>
+          ))}
+
         </div>
       </div>
-    </DndProvider>
+    </div>
   );
 };
 
-const Checkbox = ({ id, label }) => (
-  <div>
-    <input type="checkbox" id={id} className="mr-2 accent-black text-sm accent-black" />
-    <label className="text-sm " htmlFor={id}>{label}</label>
-  </div>
-);
+const Section = ({ columnName, sectionName, items, moveItem }) => {
 
-const ContentOrdering = ({ title, columns, moveItem, columnName }) => (
-  <>
-
-    <div className="flex flex-col mb-3  border border-black rounded-lg">
-      {Object.entries(columns).map(([sectionName, items], index, array) => (
-        <Section
-          key={sectionName}
-          columnName={columnName}
-          sectionName={sectionName}
-          items={items}
-          moveItem={moveItem}
-          isLast={index === array.length - 1}
-          borderTop={false}
-
-        />
-      ))}
-    </div>
-  </>
-);
-
-const Section = ({ columnName, sectionName, items, moveItem, isLast, borderTop }) => {
   const ref = useRef();
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
-    canDrop: (item) => item.source.sourceColumn === columnName,
     drop: (item, monitor) => {
-      if (item.source.sourceColumn !== columnName) return;
-
       const offset = monitor.getClientOffset();
       const boundingRect = ref.current.getBoundingClientRect();
       const y = offset.y - boundingRect.top;
@@ -160,28 +296,22 @@ const Section = ({ columnName, sectionName, items, moveItem, isLast, borderTop }
     },
   });
 
+
   return (
-    <div
-      ref={(node) => {
-        ref.current = node;
-        drop(node);
-      }}
-      className={`w-full ${!isLast && borderTop === true ? "border-r" : ""} border-black`}
-    >
-      <h4 className="text-base font-semibold px-2 text-left px-4 py-1">{formatName(sectionName)}</h4>
-      <div className={`${borderTop ? "border-t" : ""} border-black pb-3`}>
-        {items.map((item, index) => (
-          <DraggableItem
-            key={`${item}-${index}`}
-            item={item}
-            source={{
-              sourceColumn: columnName,
-              sourceSection: sectionName,
-              sourceIndex: index,
-            }}
-          />
-        ))}
-      </div>
+    <div ref={(node) => { ref.current = node; drop(node); }} className="p-2">
+      <h3 className="font-semibold text-base px-2 mb-2">{formatName(sectionName)}</h3>
+      {items.map((item, index) => (
+        <DraggableItem
+          key={item.id}
+          item={item}
+          index={index}
+          source={{
+            sourceColumn: columnName,
+            sourceSection: sectionName,
+            sourceId: item.id,
+          }}
+        />
+      ))}
     </div>
   );
 };
@@ -195,10 +325,10 @@ const DraggableItem = ({ item, source }) => {
   return (
     <div
       ref={drag}
-      className="flex py-1 items-center gap-1 text-sm cursor-move px-4 "
+      className="flex py-1 items-center gap-1 text-sm cursor-move px-2 "
     >
       <svg
-        width="13"
+        width="14"
         height="11"
         viewBox="0 0 11 7"
         fill="none"
@@ -211,7 +341,7 @@ const DraggableItem = ({ item, source }) => {
         <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
         <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
       </svg>
-      {item}
+      <p className="pb-1"> {item.id}</p>
     </div>
   );
 };

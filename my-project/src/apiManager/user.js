@@ -1,6 +1,6 @@
 import api from './api';
 
-export const verifycode = async (email,code) => {
+export const verifycode = async (email, code) => {
     const res = await api.post('/userManagementRoutes/verifyEmailCode', { email, code });
     return res.data;
 }

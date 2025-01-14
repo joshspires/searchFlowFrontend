@@ -67,12 +67,19 @@ export const searchConfiguration = {
         column: "columnTwo",
         type: "collection",
         id: "collection_1",
+        order: 1,
+      },
+      {
+        tab: "tabTwo",
+        column: "columnTwo",
+        type: "collection",
+        id: "collection_2",
         order: 2,
       },
     ],
     noResultOrdering: [
       {
-        column: "columnOne",
+        column: "columnTwo",
         section: "sectionOne",
         type: "product",
         id: "product_2",
