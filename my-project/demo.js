@@ -228,3 +228,22 @@ export const collections = [
     webflowsiteId: "6768b69f5fe75864249a7ce5",
   },
 ];
+
+
+// {
+//   "column": "columnOne",
+//   "section": "sectionOne",
+//   "sectionType": "Collections",
+//   "type": "Collections",
+//   "id": "6768b6a05fe75864249a7d99",
+//   "order": 1,
+//   "_id": "67862f20d683270505a3be67"
+// },
+
+// {
+//   column: "columnOne",
+//   section: "sectionOne",
+//   type: "collection",
+//   id: "collection_1",
+//   order: 1,
+// },

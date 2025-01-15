@@ -8,10 +8,16 @@ const ITEM_TYPE = "ITEM";
 
 
 // Main Component
-const SearchWidgetConf = () => {
+const SearchWidgetConf = ({ siteData }) => {
   const { getValues, setValue, control } = useFormContext();
   const ordering = useWatch({ control, name: "instantSearchWidgetCustomization.searchResultContentOrdering" }); // Watch for changes in "ordering"
-
+  const { siteCollections, siteProducts, sitePages, userSuggestedTerms } = siteData;
+  const dataSources = {
+    siteCollections,
+    siteProducts,
+    sitePages,
+    userSuggestedTerms,
+  };
   const searchResultLayout = useWatch({
     control,
     name: "instantSearchWidgetCustomization.searchResultLayout",
@@ -41,8 +47,8 @@ const SearchWidgetConf = () => {
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's column and section
-    movedItem.column = destColumn;
-    movedItem.section = destSection;
+    // movedItem.column = destColumn;
+    // movedItem.section = destSection;
 
     // Insert the item at the destination index
     updatedOrdering.splice(destIndex, 0, movedItem);
@@ -67,6 +73,46 @@ const SearchWidgetConf = () => {
       ? ordering.filter((item) => item.column === column && item.section === section)
         .sort((a, b) => a.order - b.order) : [];
 
+  function getDisplayName(item, dataSources) {
+    const { type, id } = item; // Extract type and id from the item
+
+    // Map the type to the appropriate dataset
+    const typeToDatasetMap = {
+      Collections: dataSources.siteCollections,
+      Products: dataSources.siteProducts,
+      Pages: dataSources.sitePages,
+      suggestedTerms: dataSources.userSuggestedTerms,
+    };
+
+    // Get the dataset corresponding to the type
+    const dataset = typeToDatasetMap[type];
+
+    if (!dataset) {
+      return null; // Return null if type is not recognized
+    }
+
+    // Find the object in the dataset by id
+    const matchedItem = dataset.find((dataItem) => dataItem._id === id);
+
+    if (!matchedItem) {
+      return null; // Return null if no matching item is found
+    }
+    console.log("matchedItem", matchedItem);
+
+    // Return the displayName based on the type
+    if (type === "Collections") {
+      return matchedItem.displayName || null; // Fallback to null if displayName doesn't exist
+    } else if (type === "Products") {
+      return matchedItem.fieldData?.name || null; // Fallback to null if fieldData.displayName doesn't exist
+    } else if (type === "Pages") {
+      return matchedItem.title || null;
+
+      // Fallback to null if title doesn't exist
+    } else if (type === "suggestedTerms") {
+      return matchedItem.term || null; // Fallback to null if term doesn't exist
+    }
+    return null; // Default fallback in case no conditions match
+  }
 
   return (
     <div className="flex mb-4 flex-col md:flex-row gap-6 border border-black rounded-xl p-6 mx-2">
@@ -116,6 +162,8 @@ const SearchWidgetConf = () => {
                         sectionName={sectionName}
                         items={getItems(columnName, sectionName)}
                         moveItem={moveItem}
+                        getDisplayName={getDisplayName}
+                        dataSources={dataSources}
                       />
                     ))}
                 </div>
@@ -125,12 +173,12 @@ const SearchWidgetConf = () => {
         </div>
       </div>
       <div className="flex-1">
-        <NoResultsLayoutSettings />
+        <NoResultsLayoutSettings siteData={siteData} />
       </div>
     </div>
   );
 };
-const Section = ({ columnName, sectionName, items, moveItem }) => {
+const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
   const ref = useRef();
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
@@ -162,22 +210,27 @@ const Section = ({ columnName, sectionName, items, moveItem }) => {
             sourceSection: sectionName,
             sourceId: item.id,
           }}
+          getDisplayName={getDisplayName}
+          dataSources={dataSources}
         />
       ))}
     </div>
   );
 };
 
-const DraggableItem = ({ item, source }) => {
+const DraggableItem = ({ item, source, getDisplayName, dataSources }) => {
+
   const [, drag] = useDrag({
     type: ITEM_TYPE,
     item: { source },
   });
 
+  const displayName = getDisplayName(item, dataSources);
   return (
+
     <div
       ref={drag}
-      className="flex py-1 items-center gap-1 text-sm cursor-move px-2 "
+      className="flex  my-2  items-center gap-1 text-sm cursor-move px-2 "
     >
       <svg
         width="14"
@@ -193,7 +246,7 @@ const DraggableItem = ({ item, source }) => {
         <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
         <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
       </svg>
-      <p className="pb-1"> {item.id}</p>
+      <p className="pb-1"> {displayName}</p>
     </div>
   );
 };

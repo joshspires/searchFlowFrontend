@@ -6,13 +6,19 @@ import SearchPageConf from "./components/SearchPageConf";
 import { FormProvider, useForm } from "react-hook-form";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { getSearchPreference, postSearchPreference } from "../../apiManager/setting";
+import {
+  getDataOfSiteAndUser,
+  getSearchPreference,
+  postSearchPreference,
+} from "../../apiManager/setting";
 
 const WebsiteSettingsPage = () => {
   const [defaultValues, setDefaultValues] = useState({});
+  const [siteData, setSiteData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
-    defaultValues  // Initialize with an empty object
+    defaultValues,
   });
 
   const { handleSubmit, reset } = form;
@@ -22,15 +28,19 @@ const WebsiteSettingsPage = () => {
       try {
         const userId = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
         const siteId = "6768b69f5fe75864249a7ce5"; // Replace with dynamic site ID
-        const searchPreferences = await getSearchPreference(userId, siteId);
-        setDefaultValues(searchPreferences?.data); // Update state
 
-        // Update form values with fetched data
+        const searchPreferences = await getSearchPreference(userId, siteId);
         if (searchPreferences?.data) {
+          setDefaultValues(searchPreferences.data);
           reset(searchPreferences.data);
         }
+
+        const siteAndUserData = await getDataOfSiteAndUser(userId, siteId);
+        if (siteAndUserData?.data) {
+          setSiteData(siteAndUserData.data);
+        }
       } catch (error) {
-        console.error("Failed to fetch search preferences:", error);
+        console.error("Failed to fetch data:", error);
       }
     };
 
@@ -38,15 +48,15 @@ const WebsiteSettingsPage = () => {
   }, [reset]);
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
-      const userId = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
       console.log("Submitting Form Data:", data);
-
-      // Send form data via postSearchPreference
       const response = await postSearchPreference(data);
       console.log("Preferences Saved successfully:", response);
     } catch (error) {
       console.error("Failed to save preferences:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,19 +68,42 @@ const WebsiteSettingsPage = () => {
         </div>
         <FormProvider {...form}>
           <DndProvider backend={HTML5Backend}>
-            <WebsiteSettingsGernal />
-            <SearchWidgetConf />
-            <SearchPageConf />
+            <WebsiteSettingsGernal siteData={siteData} />
+            <SearchWidgetConf siteData={siteData} />
+            <SearchPageConf siteData={siteData} />
           </DndProvider>
         </FormProvider>
       </div>
-      {/* Save Button */}
       <div className="flex justify-end mx-2">
         <button
           onClick={handleSubmit(onSubmit)}
-          className="px-4 rounded-lg py-1 bg-black text-white"
+          disabled={isLoading}
+          className="px-4 rounded-lg h-8 w-16 py-1 bg-black text-white flex items-center justify-center"
         >
-          Save
+          {isLoading ? (
+            <svg
+              className="animate-spin h-6 w-9 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+          ) : (
+            "Save"
+          )}
         </button>
       </div>
     </MainLayout>

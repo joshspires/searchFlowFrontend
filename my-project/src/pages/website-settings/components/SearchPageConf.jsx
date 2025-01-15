@@ -11,13 +11,18 @@ const layoutOptions = [
   { id: "two-tabs", label: "Two tabs" },
   { id: "three-tabs", label: "Three tabs" },
 ];
-const SearchPageConf = () => {
-  const { getValues, setValue, control } = useFormContext();
+const SearchPageConf = ({ siteData }) => {
+  const { getValues, setValue, register, control } = useFormContext();
   const ordering = useWatch({ control, name: "searchResultPageCustomization.noResultOrdering" }); // Watch for changes in "ordering"
 
   const searchResultContentOrdering = useWatch({ control, name: "searchResultPageCustomization.searchResultContentOrdering" }); // Watch for changes in "ordering"
-
-
+  const { siteCollections, siteProducts, sitePages, userSuggestedTerms } = siteData;
+  const dataSources = {
+    siteCollections,
+    siteProducts,
+    sitePages,
+    userSuggestedTerms,
+  };
   const searchResultLayout = useWatch({
     control,
     name: "searchResultPageCustomization.searchResultLayout",
@@ -48,8 +53,8 @@ const SearchPageConf = () => {
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's column and section
-    movedItem.column = destColumn;
-    movedItem.section = destSection;
+    // movedItem.column = destColumn;
+    // movedItem.section = destSection;
 
     // Insert the item at the destination index
     updatedOrdering.splice(destIndex, 0, movedItem);
@@ -73,7 +78,46 @@ const SearchPageConf = () => {
     ordering
       ? ordering.filter((item) => item.column === column && item.section === section)
         .sort((a, b) => a.order - b.order) : [];
+  function getDisplayName(item, dataSources) {
+    const { type, id } = item; // Extract type and id from the item
 
+    // Map the type to the appropriate dataset
+    const typeToDatasetMap = {
+      Collections: dataSources.siteCollections,
+      Products: dataSources.siteProducts,
+      Pages: dataSources.sitePages,
+      suggestedTerms: dataSources.userSuggestedTerms,
+    };
+
+    // Get the dataset corresponding to the type
+    const dataset = typeToDatasetMap[type];
+
+    if (!dataset) {
+      return null; // Return null if type is not recognized
+    }
+
+    // Find the object in the dataset by id
+    const matchedItem = dataset.find((dataItem) => dataItem._id === id);
+
+    if (!matchedItem) {
+      return null; // Return null if no matching item is found
+    }
+    console.log("matchedItem", matchedItem);
+
+    // Return the displayName based on the type
+    if (type === "Collections") {
+      return matchedItem.displayName || null; // Fallback to null if displayName doesn't exist
+    } else if (type === "Products") {
+      return matchedItem.fieldData?.name || null; // Fallback to null if fieldData.displayName doesn't exist
+    } else if (type === "Pages") {
+      return matchedItem.title || null;
+
+      // Fallback to null if title doesn't exist
+    } else if (type === "suggestedTerms") {
+      return matchedItem.term || null; // Fallback to null if term doesn't exist
+    }
+    return null; // Default fallback in case no conditions match
+  }
 
   const moveTabItem = (source, destination) => {
 
@@ -93,8 +137,8 @@ const SearchPageConf = () => {
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's tab and column
-    movedItem.tab = destSection;
-    movedItem.column = destColumn;
+    // movedItem.tab = destSection;
+    // movedItem.column = destColumn;
 
     // Insert the item at the destination index
     updatedOrdering.splice(destIndex, 0, movedItem);
@@ -121,7 +165,6 @@ const SearchPageConf = () => {
         .sort((a, b) => a.order - b.order)
       : [];
 
-
   return (
     <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-black justify-between rounded-xl m-2">
       {/* left section */}
@@ -129,7 +172,6 @@ const SearchPageConf = () => {
         <h2 className="text-lg font-bold mb-4">Search results page</h2>
         <div className="mx-2">
           <h3 className="text-base font-semibold mb-2">Search results layout</h3>
-          {/* check Box section  */}
           {/* check Box section  */}
           <div className="space-y-1">
             {layoutOptions.map(({ id, label }) => (
@@ -159,7 +201,7 @@ const SearchPageConf = () => {
                 {["tabOne", "tabTwo", "tabThree"].map((tabName) => (
                   <div
                     key={tabName}
-                    className="px-2 mx-4 text-sm font-semibold py-1 cursor-pointer hover:bg-gray-200 font-semibold"
+                    className="px-2 mx-4 text-sm font-semibold py-1 cursor-pointer  font-semibold"
                   >
                     {formatName(tabName)}
                   </div>
@@ -168,6 +210,9 @@ const SearchPageConf = () => {
 
               {/* Main Content Section */}
               <div className="flex w-full border rounded-xl border-black">
+                {/* if we have to drag and drop full system then 
+                {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => { */}
+                {/* else for ordering change */}
                 {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => {
                   // Map columns to sections
                   const sectionName = ["tabOne", "tabTwo", "tabThree"][index];
@@ -184,7 +229,9 @@ const SearchPageConf = () => {
                           columnName={columnName}
                           sectionName={sectionName}
                           items={getTabItems(sectionName, columnName)} // Get items specific to tab and column
-                          moveItem={moveTabItem} // Use the moveTabItem function
+                          moveItem={moveTabItem}
+                          getDisplayName={getDisplayName}
+                          dataSources={dataSources} // Use the moveTabItem function
                         />
                       </div>
                     </div>
@@ -204,20 +251,50 @@ const SearchPageConf = () => {
               type="checkbox"
               id="suggestedSearchTerms"
               className="accent-black"
-              checked={useWatch({ control, name: "searchResultPageCustomization.suggestedSearchTerms" }) || false}  // Ensure it's boolean
-              onChange={(e) =>
-                setValue(
-                  "searchResultPageCustomization.suggestedSearchTerms",
-                  e.target.checked,
-                  { shouldValidate: true, shouldDirty: true }
-                )
-              }
-            />
+              // checked={useWatch({ control, name: "searchResultPageCustomization.suggestedSearchTerms" }) || false} 
+              {...register("searchResultPageCustomization.suggestedSearchTerms")}
+              // Ensure it's boolean
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                const currentNoResultOrdering = getValues("searchResultPageCustomization.noResultOrdering");
 
+                if (isChecked) {
+                  // Add all userSuggestedTerms to `noResultOrdering`
+                  const suggestedTermsToAdd = siteData.userSuggestedTerms.map((term, index) => ({
+                    column: "columnOne",
+                    section: "SuggestedTerms",
+                    sectionType: "suggestedTerms",
+                    type: "suggestedTerms",
+                    id: term._id,
+                    order: index + 1, // Incremental order starting from 1
+                  }));
+
+                  // Update the value for `noResultOrdering` in `searchResultPageCustomization`
+                  setValue(
+                    "searchResultPageCustomization.noResultOrdering",
+                    [...currentNoResultOrdering, ...suggestedTermsToAdd],
+                    { shouldDirty: true }
+                  );
+                } else {
+                  // Remove all suggestedTerms from `noResultOrdering`
+                  const updatedNoResultOrdering = currentNoResultOrdering.filter(
+                    (entry) => entry.type !== "suggestedTerms"
+                  );
+
+                  // Update the value for `noResultOrdering` in `searchResultPageCustomization`
+                  setValue(
+                    "searchResultPageCustomization.noResultOrdering",
+                    updatedNoResultOrdering,
+                    { shouldDirty: true }
+                  );
+                }
+              }}
+            />
             <label htmlFor="suggestedSearchTerms" className="text-sm">
               Suggested search terms
             </label>
           </div>
+
 
           <h3 className="text- font-semibold mb-1">Search results content ordering</h3>
           <div className="flex items-center gap-2">
@@ -264,6 +341,8 @@ const SearchPageConf = () => {
                       sectionName={sectionName}
                       items={getItems(columnName, sectionName)}
                       moveItem={moveItem}
+                      getDisplayName={getDisplayName}
+                      dataSources={dataSources}
                     />
                   ))}
               </div>
@@ -275,9 +354,7 @@ const SearchPageConf = () => {
     </div>
   );
 };
-
-const Section = ({ columnName, sectionName, items, moveItem }) => {
-
+const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
   const ref = useRef();
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
@@ -296,7 +373,6 @@ const Section = ({ columnName, sectionName, items, moveItem }) => {
     },
   });
 
-
   return (
     <div ref={(node) => { ref.current = node; drop(node); }} className="p-2">
       <h3 className="font-semibold text-base px-2 mb-2">{formatName(sectionName)}</h3>
@@ -310,19 +386,25 @@ const Section = ({ columnName, sectionName, items, moveItem }) => {
             sourceSection: sectionName,
             sourceId: item.id,
           }}
+          getDisplayName={getDisplayName}
+          dataSources={dataSources}
         />
       ))}
     </div>
   );
 };
 
-const DraggableItem = ({ item, source }) => {
+const DraggableItem = ({ item, source, getDisplayName, dataSources }) => {
+
   const [, drag] = useDrag({
     type: ITEM_TYPE,
     item: { source },
   });
 
+  const displayName = getDisplayName(item, dataSources);
+
   return (
+
     <div
       ref={drag}
       className="flex py-1 items-center gap-1 text-sm cursor-move px-2 "
@@ -341,7 +423,7 @@ const DraggableItem = ({ item, source }) => {
         <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
         <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
       </svg>
-      <p className="pb-1"> {item.id}</p>
+      <p className="pb-1"> {displayName}</p>
     </div>
   );
 };

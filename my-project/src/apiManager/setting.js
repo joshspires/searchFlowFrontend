@@ -6,17 +6,22 @@ export const getSearchPreference = async (userId, siteId) => {
     });
     return res.data;
 };
-export const postSearchPreference = async (preferences) => {
+export const postSearchPreference = async (data) => {
     try {
         const res = await api.post(
             `/searchPreferenceManagementRoutes/createorUpdateSearchPreference`,
-            preferences // Data sent in the body
+            data // Data sent in the body
         );
-        console.log("response", res);
-
         return res.data;
     } catch (error) {
         console.error('Error posting search preferences:', error);
         throw error;
     }
 };
+export const getDataOfSiteAndUser = async (userId, siteId) => {
+    const res = await api.get(`/webFlowManagementRoutes/getDataofSiteandUser`, {
+        params: { userId, siteId },
+    });
+    return res.data;
+};
+
