@@ -16,7 +16,6 @@ const NoResultsLayoutSettings = ({ siteData }) => {
     name: "instantSearchWidgetCustomization.defaultOrNoResultLayout",
   }); // Watch for changes in "defaultOrNoResultLayout"
   const { siteCollections, siteProducts, sitePages, userSuggestedTerms } = siteData;
-  console.log("userSuggestedTerms", userSuggestedTerms);
 
   const dataSources = {
     siteCollections,
@@ -35,9 +34,8 @@ const NoResultsLayoutSettings = ({ siteData }) => {
     const { sourceColumn, sourceSection, sourceId } = source;
     const { destColumn, destSection, destIndex } = destination;
 
-    // Clone current ordering
-    const updatedOrdering = [
-      ...getValues("instantSearchWidgetCustomization.defaultOrNoResultOrdering"),
+    // Clone the current ordering
+    const updatedOrdering = [...getValues("instantSearchWidgetCustomization.defaultOrNoResultOrdering"),
     ];
 
     // Find and remove the source item
@@ -47,33 +45,49 @@ const NoResultsLayoutSettings = ({ siteData }) => {
         item.section === sourceSection &&
         item.id === sourceId
     );
+
+    if (itemIndex === -1) {
+      console.error("Item not found in the source column/section.");
+      return;
+    }
+
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's column and section
     // movedItem.column = destColumn;
     // movedItem.section = destSection;
 
-    // Insert the item at the destination index
-    updatedOrdering.splice(destIndex, 0, movedItem);
+    // Get the items in the destination group and insert the moved item at the correct index
+    const destinationGroup = updatedOrdering.filter(
+      (item) => item.column === destColumn && item.section === destSection
+    );
 
-    // Reorder items
-    const reorder = (items) =>
-      items.map((item, index) => ({ ...item, order: index + 1 }));
-    const grouped = updatedOrdering.reduce((acc, item) => {
-      const key = `${item.column}-${item.section}`;
-      acc[key] = acc[key] || [];
-      acc[key].push(item);
-      return acc;
-    }, {});
-    const reordered = Object.values(grouped).flatMap(reorder);
+    const reorderedDestinationGroup = [
+      ...destinationGroup.slice(0, destIndex),
+      movedItem,
+      ...destinationGroup.slice(destIndex),
+    ].map((item, index) => ({
+      ...item,
+      order: index + 1, // Update order only for the destination group
+    }));
 
-    // Update form state
+    // Update the rest of the ordering without modifying other groups
+    const finalOrdering = updatedOrdering
+      .filter(
+        (item) => !(item.column === destColumn && item.section === destSection)
+      )
+      .concat(reorderedDestinationGroup);
+
+    // console.log("finalOrdering", finalOrdering);
+
+    // Update the form state
     setValue(
       "instantSearchWidgetCustomization.defaultOrNoResultOrdering",
-      reordered,
+      finalOrdering,
       { shouldValidate: true, shouldDirty: true }
     );
   };
+
 
   const getItems = (column, section) =>
     ordering
@@ -105,8 +119,6 @@ const NoResultsLayoutSettings = ({ siteData }) => {
     if (!matchedItem) {
       return null; // Return null if no matching item is found
     }
-    console.log("matchedItem", matchedItem);
-
     // Return the displayName based on the type
     if (type === "Collections") {
       return matchedItem.displayName || null; // Fallback to null if displayName doesn't exist
@@ -173,7 +185,7 @@ const NoResultsLayoutSettings = ({ siteData }) => {
                   // Add all userSuggestedTerms to `defaultOrNoResultOrdering`
                   setValue(
                     "instantSearchWidgetCustomization.defaultOrNoResultOrdering",
-                    [...suggestedTermsToAdd], // No need to merge, just set the new value
+                    [...currentNoResultOrdering, ...suggestedTermsToAdd], // No need to merge, just set the new value
                     { shouldDirty: true }
                   );
 

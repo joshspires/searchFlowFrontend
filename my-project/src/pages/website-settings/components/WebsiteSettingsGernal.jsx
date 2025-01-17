@@ -109,8 +109,8 @@ const WebsiteSettingsGernal = ({ siteData }) => {
                           [
                             ...currentTabOrder,
                             {
-                              tab: "tabOne",
-                              column: "columnOne",
+                              tabName: "Collections",
+                              tabNumber: "one",
                               // sectionType: "Collections",
                               type: "Collections",
                               id: item._id,
@@ -183,8 +183,8 @@ const WebsiteSettingsGernal = ({ siteData }) => {
                         order: index + 1, // Incremental order starting from 1
                       }));
                       const pagesToAdd1 = siteData.sitePages.map((page, index) => ({
-                        tab: "tabThree",
-                        column: "columnThree",
+                        tabName: "Pages",
+                        tabNumber: "three",
                         // sectionType: "Pages",
                         type: "Pages",
                         id: page._id,
@@ -192,25 +192,23 @@ const WebsiteSettingsGernal = ({ siteData }) => {
                       }));
 
                       setValue(
-                        "instantSearchWidgetCustomization.searchResultContentOrdering",
-                        [...currentOrder, ...pagesToAdd],
-                        { shouldDirty: true }
-                      );
-                      setValue(
                         "searchResultPageCustomization.searchResultContentOrdering",
                         [...currentTabOrder, ...pagesToAdd1],
                         { shouldDirty: true }
                       );
+                      setValue(
+                        "instantSearchWidgetCustomization.searchResultContentOrdering",
+                        [...currentOrder, ...pagesToAdd],
+                        { shouldDirty: true }
+                      );
+
 
                     } else {
                       // Remove all entries with `type` === "Pages" from `searchResultContentOrdering`
                       const updatedOrder = currentOrder.filter(
                         (entry) => entry.type !== "Pages"
                       );
-
-
-                      const updatedOrder1 = currentTabOrder.filter((entry) => entry.tab !== "tabThree");
-
+                      const updatedOrder1 = currentTabOrder.filter((entry) => entry.tabName !== "Pages");
 
                       setValue(
                         "instantSearchWidgetCustomization.searchResultContentOrdering",
@@ -230,12 +228,8 @@ const WebsiteSettingsGernal = ({ siteData }) => {
 
             </div>
           </div>
-
-          {/* Products */}
           {/* Products */}
           <div>
-            <h3 className="text-md font-medium mb-2">Products {"{website name}"}</h3>
-            {/* Products */}
             <div>
               <h3 className="text-md font-medium mb-2">Products</h3>
               <div>
@@ -289,8 +283,8 @@ const WebsiteSettingsGernal = ({ siteData }) => {
                         // Add all siteProducts of type "Products" to searchResultContentOrdering in the second tab
                         const productsToAdd3 = siteData.siteProducts
                           .map((product, index) => ({
-                            tab: "tabTwo",
-                            column: "columnTwo",
+                            tabName: "Products",
+                            tabNumber: "two",
                             type: "Products",
                             id: product._id,
                             order: currentTabOrder.length + index + 1, // Incremental order

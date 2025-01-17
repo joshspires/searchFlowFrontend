@@ -26,10 +26,20 @@ const WebsiteSettingsPage = () => {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const userId = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
+
+        // later we remove this after by login the userId set
+        const userIdToSet = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
+
+        localStorage.setItem("userId", userIdToSet);
+
+        // Get the userId
+        const userId = localStorage.getItem("userId");
+
         const siteId = "6768b69f5fe75864249a7ce5"; // Replace with dynamic site ID
 
         const searchPreferences = await getSearchPreference(userId, siteId);
+        console.log("searchPreferences", searchPreferences);
+
         if (searchPreferences?.data) {
           setDefaultValues(searchPreferences.data);
           reset(searchPreferences.data);

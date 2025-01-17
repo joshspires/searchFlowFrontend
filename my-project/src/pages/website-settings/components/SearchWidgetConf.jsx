@@ -12,6 +12,7 @@ const SearchWidgetConf = ({ siteData }) => {
   const { getValues, setValue, control } = useFormContext();
   const ordering = useWatch({ control, name: "instantSearchWidgetCustomization.searchResultContentOrdering" }); // Watch for changes in "ordering"
   const { siteCollections, siteProducts, sitePages, userSuggestedTerms } = siteData;
+
   const dataSources = {
     siteCollections,
     siteProducts,
@@ -34,7 +35,7 @@ const SearchWidgetConf = ({ siteData }) => {
     const { sourceColumn, sourceSection, sourceId } = source;
     const { destColumn, destSection, destIndex } = destination;
 
-    // Clone current ordering
+    // Clone the current ordering
     const updatedOrdering = [...getValues("instantSearchWidgetCustomization.searchResultContentOrdering")];
 
     // Find and remove the source item
@@ -44,28 +45,47 @@ const SearchWidgetConf = ({ siteData }) => {
         item.section === sourceSection &&
         item.id === sourceId
     );
+
+    if (itemIndex === -1) {
+      console.error("Item not found in the source column/section.");
+      return;
+    }
+
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's column and section
     // movedItem.column = destColumn;
     // movedItem.section = destSection;
 
-    // Insert the item at the destination index
-    updatedOrdering.splice(destIndex, 0, movedItem);
+    // Get the items in the destination group and insert the moved item at the correct index
+    const destinationGroup = updatedOrdering.filter(
+      (item) => item.column === destColumn && item.section === destSection
+    );
 
-    // Reorder items
-    const reorder = (items) =>
-      items.map((item, index) => ({ ...item, order: index + 1 }));
-    const grouped = updatedOrdering.reduce((acc, item) => {
-      const key = `${item.column}-${item.section}`;
-      acc[key] = acc[key] || [];
-      acc[key].push(item);
-      return acc;
-    }, {});
-    const reordered = Object.values(grouped).flatMap(reorder);
+    const reorderedDestinationGroup = [
+      ...destinationGroup.slice(0, destIndex),
+      movedItem,
+      ...destinationGroup.slice(destIndex),
+    ].map((item, index) => ({
+      ...item,
+      order: index + 1, // Update order only for the destination group
+    }));
 
-    // Update form state
-    setValue("instantSearchWidgetCustomization.searchResultContentOrdering", reordered, { shouldValidate: true, shouldDirty: true });
+    // Update the rest of the ordering without modifying other groups
+    const finalOrdering = updatedOrdering
+      .filter(
+        (item) => !(item.column === destColumn && item.section === destSection)
+      )
+      .concat(reorderedDestinationGroup);
+
+    // console.log("finalOrdering", finalOrdering);
+
+    // Update the form state
+    setValue(
+      "instantSearchWidgetCustomization.searchResultContentOrdering",
+      finalOrdering,
+      { shouldValidate: true, shouldDirty: true }
+    );
   };
 
   const getItems = (column, section) =>
@@ -97,7 +117,6 @@ const SearchWidgetConf = ({ siteData }) => {
     if (!matchedItem) {
       return null; // Return null if no matching item is found
     }
-    console.log("matchedItem", matchedItem);
 
     // Return the displayName based on the type
     if (type === "Collections") {

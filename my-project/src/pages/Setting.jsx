@@ -6,14 +6,14 @@ import MainLayout from "../Layout/MainLayout";
 export default function Setting() {
   return (
     <MainLayout>
-      <div className="overflow-hidden pr-10 bg-white max-md:pr-5">
-        <div className="flex flex-col ml-5 w-full max-md:ml-0 max-md:w-full">
-          <div className="flex flex-col mt-5 max-md:mt-4 max-md:max-w-full">
+      <div className=" bg-white mx-5 ">
+        <div className="flex flex-col w-full ">
+          <div className="flex flex-col mt-5">
             {/* Page Header */}
-            <h1 className="self-start text-2xl font-bold text-black">Settings</h1>
+            <h1 className="self-start text-2xl pr-2 font-semibold text-black">Settings</h1>
 
             {/* Settings Content */}
-            <div className="mt-3">
+            <div className="">
               <AccountSetting />
               <PlanBilling />
             </div>

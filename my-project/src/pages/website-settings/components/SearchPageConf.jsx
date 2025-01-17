@@ -40,7 +40,7 @@ const SearchPageConf = ({ siteData }) => {
     const { sourceColumn, sourceSection, sourceId } = source;
     const { destColumn, destSection, destIndex } = destination;
 
-    // Clone current ordering
+    // Clone the current ordering
     const updatedOrdering = [...getValues("searchResultPageCustomization.noResultOrdering")];
 
     // Find and remove the source item
@@ -50,34 +50,52 @@ const SearchPageConf = ({ siteData }) => {
         item.section === sourceSection &&
         item.id === sourceId
     );
+    if (itemIndex === -1) {
+      console.error("Item not found in the source column/section.");
+      return;
+    }
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
     // Update the moved item's column and section
     // movedItem.column = destColumn;
     // movedItem.section = destSection;
 
-    // Insert the item at the destination index
-    updatedOrdering.splice(destIndex, 0, movedItem);
+    // Get the items in the destination group and insert the moved item at the correct index
+    const destinationGroup = updatedOrdering.filter(
+      (item) => item.column === destColumn && item.section === destSection
+    );
 
-    // Reorder items
-    const reorder = (items) =>
-      items.map((item, index) => ({ ...item, order: index + 1 }));
-    const grouped = updatedOrdering.reduce((acc, item) => {
-      const key = `${item.column}-${item.section}`;
-      acc[key] = acc[key] || [];
-      acc[key].push(item);
-      return acc;
-    }, {});
-    const reordered = Object.values(grouped).flatMap(reorder);
+    const reorderedDestinationGroup = [
+      ...destinationGroup.slice(0, destIndex),
+      movedItem,
+      ...destinationGroup.slice(destIndex),
+    ].map((item, index) => ({
+      ...item,
+      order: index + 1, // Update order only for the destination group
+    }));
 
-    // Update form state
-    setValue("searchResultPageCustomization.noResultOrdering", reordered, { shouldValidate: true, shouldDirty: true });
+    // Update the rest of the ordering without modifying other groups
+    const finalOrdering = updatedOrdering
+      .filter(
+        (item) => !(item.column === destColumn && item.section === destSection)
+      )
+      .concat(reorderedDestinationGroup);
+
+    // console.log("finalOrdering", finalOrdering);
+
+    // Update the form state
+    setValue(
+      "searchResultPageCustomization.noResultOrdering",
+      finalOrdering,
+      { shouldValidate: true, shouldDirty: true }
+    );
   };
 
   const getItems = (column, section) =>
     ordering
       ? ordering.filter((item) => item.column === column && item.section === section)
         .sort((a, b) => a.order - b.order) : [];
+
   function getDisplayName(item, dataSources) {
     const { type, id } = item; // Extract type and id from the item
 
@@ -102,8 +120,6 @@ const SearchPageConf = ({ siteData }) => {
     if (!matchedItem) {
       return null; // Return null if no matching item is found
     }
-    console.log("matchedItem", matchedItem);
-
     // Return the displayName based on the type
     if (type === "Collections") {
       return matchedItem.displayName || null; // Fallback to null if displayName doesn't exist
@@ -120,9 +136,9 @@ const SearchPageConf = ({ siteData }) => {
   }
 
   const moveTabItem = (source, destination) => {
-
-    const { sourceTab, sourceColumn, sourceId } = source;
+    const { sourceSection, sourceColumn, sourceId } = source;
     const { destSection, destColumn, destIndex } = destination;
+
 
     // Clone current ordering
     const updatedOrdering = [...getValues("searchResultPageCustomization.searchResultContentOrdering")];
@@ -130,40 +146,76 @@ const SearchPageConf = ({ siteData }) => {
     // Find and remove the source item
     const itemIndex = updatedOrdering.findIndex(
       (item) =>
-        item.tab === sourceTab &&
-        item.column === sourceColumn &&
+        item.tabNumber === sourceSection &&
+        item.tabName === sourceColumn &&
         item.id === sourceId
     );
+
+    if (itemIndex === -1) {
+      console.error("Source item not found");
+      return;
+    }
+
     const [movedItem] = updatedOrdering.splice(itemIndex, 1);
 
-    // Update the moved item's tab and column
-    // movedItem.tab = destSection;
-    // movedItem.column = destColumn;
+    // Identify the destination group (tab + column)
+    const destinationGroup = updatedOrdering.filter(
+      (item) => item.tabNumber === destSection && item.tabName === destColumn
+    );
 
-    // Insert the item at the destination index
-    updatedOrdering.splice(destIndex, 0, movedItem);
+    // Insert the moved item into the destination group
+    if (sourceSection === destSection && sourceColumn === destColumn) {
+      // Moving within the same group
+      const groupStartIndex = updatedOrdering.findIndex(
+        (item) => item.tabNumber === destSection && item.tabName === destColumn
+      );
+      updatedOrdering.splice(groupStartIndex + destIndex, 0, movedItem);
+    } else {
+      // Moving to a different group
+      const groupStartIndex = updatedOrdering.findIndex(
+        (item) => item.tabNumber === destSection && item.tabName === destColumn
+      );
 
-    // Reorder items
-    const reorder = (items) =>
-      items.map((item, index) => ({ ...item, order: index + 1 }));
-    const grouped = updatedOrdering.reduce((acc, item) => {
-      const key = `${item.tab}-${item.column}`;
-      acc[key] = acc[key] || [];
-      acc[key].push(item);
-      return acc;
-    }, {});
-    const reordered = Object.values(grouped).flatMap(reorder);
+      if (groupStartIndex === -1) {
+        // If the group doesn't exist, add the item to the end
+        updatedOrdering.push(movedItem);
+      } else {
+        updatedOrdering.splice(groupStartIndex + destIndex, 0, movedItem);
+      }
+    }
+
+    // Reorder only the destination group
+    const destinationGroupItems = updatedOrdering.filter(
+      (item) => item.tabNumber === destSection && item.tabName === destColumn
+    );
+
+    destinationGroupItems.forEach((item, index) => {
+      item.order = index + 1; // Update the order within the destination group
+    });
 
     // Update form state
-    setValue("searchResultPageCustomization.searchResultContentOrdering", reordered, { shouldValidate: true, shouldDirty: true });
+    setValue("searchResultPageCustomization.searchResultContentOrdering", updatedOrdering, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
-  const getTabItems = (tab, column) =>
-    searchResultContentOrdering
-      ? searchResultContentOrdering
-        .filter((item) => item.tab === tab && item.column === column)
-        .sort((a, b) => a.order - b.order)
-      : [];
+
+
+
+  const getTabItems = (tab, column) => {
+    if (!searchResultContentOrdering || !Array.isArray(searchResultContentOrdering)) {
+      return [];
+    }
+
+    return searchResultContentOrdering
+      .filter((item) =>
+        String(item.tabName).toLowerCase() === String(tab).toLowerCase() &&
+        String(item.tabNumber).toLowerCase() === String(column).toLowerCase()
+      )
+      .sort((a, b) => a.order - b.order);
+  };
+
 
   return (
     <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-black justify-between rounded-xl m-2">
@@ -198,12 +250,12 @@ const SearchPageConf = ({ siteData }) => {
             <div className="flex flex-col mt-5 w-full mx-auto border-black rounded-xl">
               {/* Tabs Section */}
               <div className="flex  justify-between border-gray-300">
-                {["tabOne", "tabTwo", "tabThree"].map((tabName) => (
+                {["tabOne", "tabTwo", "tabThree"].map((tabNo) => (
                   <div
-                    key={tabName}
+                    key={tabNo}
                     className="px-2 mx-4 text-sm font-semibold py-1 cursor-pointer  font-semibold"
                   >
-                    {formatName(tabName)}
+                    {formatName(tabNo)}
                   </div>
                 ))}
               </div>
@@ -213,9 +265,9 @@ const SearchPageConf = ({ siteData }) => {
                 {/* if we have to drag and drop full system then 
                 {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => { */}
                 {/* else for ordering change */}
-                {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => {
+                {["Collections", "Products", "Pages"].map((columnName, index) => {
                   // Map columns to sections
-                  const sectionName = ["tabOne", "tabTwo", "tabThree"][index];
+                  const sectionName = ["one", "two", "three"][index];
 
                   return (
                     <div
@@ -228,7 +280,7 @@ const SearchPageConf = ({ siteData }) => {
                           key={`${columnName}-${sectionName}`}
                           columnName={columnName}
                           sectionName={sectionName}
-                          items={getTabItems(sectionName, columnName)} // Get items specific to tab and column
+                          items={getTabItems(columnName, sectionName)} // Get items specific to tab and column
                           moveItem={moveTabItem}
                           getDisplayName={getDisplayName}
                           dataSources={dataSources} // Use the moveTabItem function
@@ -355,6 +407,7 @@ const SearchPageConf = ({ siteData }) => {
   );
 };
 const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
+
   const ref = useRef();
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
