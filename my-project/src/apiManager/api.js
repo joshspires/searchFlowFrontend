@@ -3,8 +3,8 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  // baseURL: 'https://searchflow-ed703fb051f2.herokuapp.com/api', // Replace with your API base URL
-  baseURL: "http://localhost:3003/api", // Replace with your API base URL
+  baseURL: 'https://searchflow-ed703fb051f2.herokuapp.com/api', // Replace with your API base URL
+  // baseURL: "http://localhost:3003/api", // Replace with your API base URL
 });
 
 // You can add request interceptors to handle common tasks like adding tokens to headers

@@ -20,17 +20,17 @@ export default function Login() {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   if (userInfo) {
-  //     if (!userInfo.data.isEmailVerified) {
-  //       navigate("/verify-email");
-  //     } else if (userInfo.data.webflowAccessToken == null) {
-  //       navigate("/connect-webflow");
-  //     } else{
-  //       navigate("/dashboard");
-  //     }
-  //   }
-  // }, [userInfo, navigate]);
+  useEffect(() => {
+    if (userInfo) {
+      if (!userInfo.data.isEmailVerified) {
+        navigate("/verify-email");
+      } else if (userInfo.data.webflowAccessToken == null) {
+        navigate("/connect-webflow");
+      } else{
+        navigate("/dashboard");
+      }
+    }
+  }, [userInfo, navigate]);
 
   const validateInputs = () => {
     const newErrors = {};

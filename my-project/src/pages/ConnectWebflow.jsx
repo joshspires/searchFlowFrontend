@@ -5,13 +5,15 @@ function ConnectWebflow() {
   const [loading, setLoading] = useState(false);
 
   const userId = useSelector((state) => state.auth.userInfo.data.userId);
+  console.log(userId);
+
 
   const handleConnectWebflow = async () => {
     setLoading(true);
     try {
       // Redirect directly to the backend endpoint
-      // const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
-      const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+      const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+      // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
       window.location.href = url;
     } catch (error) {
       alert(
