@@ -1,6 +1,14 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function WebsiteCard({ name, lastSync, collections, items, products }) {
+export default function WebsiteCard({ webflowSiteId, name, lastSync, collections, items, products }) {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    // Navigate to the website settings page
+    navigate(`/connected-websites/settings/${webflowSiteId}`);
+  };
+
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg border border-gray-300 shadow-md w-[339px]">
       <div className="flex justify-between items-center mb-4">
@@ -31,7 +39,8 @@ export default function WebsiteCard({ name, lastSync, collections, items, produc
       </div>
 
       {/* Button */}
-      <button className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md self-end">
+      
+      <button onClick={handleNavigate} className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md self-end">
         Settings
       </button>
     </div>

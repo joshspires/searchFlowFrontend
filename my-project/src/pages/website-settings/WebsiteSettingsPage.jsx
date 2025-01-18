@@ -11,15 +11,21 @@ import {
   getSearchPreference,
   postSearchPreference,
 } from "../../apiManager/setting";
+import { useSelector } from "react-redux";
+import {useParams} from "react-router-dom";
 
 const WebsiteSettingsPage = () => {
   const [defaultValues, setDefaultValues] = useState({});
   const [siteData, setSiteData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
 
   const form = useForm({
     defaultValues,
   });
+
+  const { userInfo } = useSelector((state) => state.auth);
+  const userId = userInfo.data.userId;
 
   const { handleSubmit, reset } = form;
 
@@ -28,14 +34,14 @@ const WebsiteSettingsPage = () => {
       try {
 
         // later we remove this after by login the userId set
-        const userIdToSet = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
+        // const userIdToSet = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
 
-        localStorage.setItem("userId", userIdToSet);
+        // localStorage.setItem("userId", userIdToSet);
 
-        // Get the userId
-        const userId = localStorage.getItem("userId");
+        // // Get the userId
+        // const userId = localStorage.getItem("userId");
 
-        const siteId = "6768b69f5fe75864249a7ce5"; // Replace with dynamic site ID
+        const siteId = id // Replace with dynamic site ID
 
         const searchPreferences = await getSearchPreference(userId, siteId);
         console.log("searchPreferences", searchPreferences);

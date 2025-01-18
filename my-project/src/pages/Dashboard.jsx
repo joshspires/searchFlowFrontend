@@ -51,6 +51,7 @@ export default function Dashboard() {
               collections={website.totalCollections}
               items={website.totalItems}
               products={website.totalProducts}
+              webflowSiteId={website.webflowSiteId}
             />
           ))}
         </div>
