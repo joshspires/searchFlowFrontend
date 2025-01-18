@@ -13,8 +13,8 @@ api.interceptors.request.use(
     // Example: Add authorization token if available
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    if (userInfo && userInfo.token) {
-      const token = userInfo.token;
+    if (userInfo && userInfo.data.token) {
+      const token = userInfo.data.token;
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
