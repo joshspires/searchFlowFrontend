@@ -17,6 +17,7 @@ export default function Dashboard() {
         const res = await getDashboardData(userId);
         setData(res.data); // Set data from the response
       } catch (error) {
+        console.log(error); 
         alert(
           error.response?.data?.message ||
             "Error occurred while fetching the data"
