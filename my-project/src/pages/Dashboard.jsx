@@ -5,33 +5,40 @@ import { getDashboardData } from "../apiManager/webflow";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../common/Loader";
 import { setDashboardData } from "../slices/dashboardSlice";
+import { useSearchParams } from "react-router-dom";
 
 export default function Dashboard() {
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get("userId");
+  console.log("userId dashboard", userId);
+
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
+  // const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
   const dashboardData = useSelector((state) => state.dashboard.data); // Accessing Redux state
 
   useEffect(() => {
-    if (dashboardData.length === 0) {
-      // Fetch data only if not already available
-      (async () => {
-        setLoading(true);
-        try {
+
+    // Fetch data only if not already available
+    (async () => {
+      setLoading(true);
+      try {
+        console.log("userId", userId);
+        setTimeout(async () => {
           const res = await getDashboardData(userId);
           dispatch(setDashboardData(res?.data)); // Store data in Redux
-        } catch (error) {
-          console.error(error);
-          alert(
-            error.response?.data?.message ||
-            "Error occurred while fetching the data"
-          );
-        } finally {
-          setLoading(false);
-        }
-      })();
-    }
-  }, [userId, dispatch, dashboardData]);
+        }, 2000);
+      } catch (error) {
+        console.error(error);
+        alert(
+          error.response?.data?.message ||
+          "Error occurred while fetching the data"
+        );
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [userId]);
 
   if (loading) return <Loader />;
 

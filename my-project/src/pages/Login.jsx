@@ -19,6 +19,8 @@ export default function Login() {
   const [isForgotLoading, setIsForgotLoading] = useState(false);
 
   const { userInfo } = useSelector((state) => state.auth);
+  const userId = userInfo?.data.userId;
+  console.log(userId);
 
   useEffect(() => {
     if (userInfo) {
@@ -26,8 +28,8 @@ export default function Login() {
         navigate("/verify-email");
       } else if (userInfo.data.webflowAccessToken == null) {
         navigate("/connect-webflow");
-      } else{
-        navigate("/dashboard");
+      } else {
+        navigate(`/dashboard?userId=${userId}`);
       }
     }
   }, [userInfo, navigate]);
@@ -87,7 +89,7 @@ export default function Login() {
     } catch (error) {
       setForgotError(
         error.message ||
-          "An error occurred while resetting the password. Please try again."
+        "An error occurred while resetting the password. Please try again."
       );
     } finally {
       setIsForgotLoading(false);
@@ -177,11 +179,10 @@ export default function Login() {
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
               placeholder="Enter your email"
-              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 ${
-                forgotError
-                  ? "border-red-500 focus:ring-red-500"
-                  : "focus:ring-blue-500"
-              }`}
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 ${forgotError
+                ? "border-red-500 focus:ring-red-500"
+                : "focus:ring-blue-500"
+                }`}
             />
             {forgotError && (
               <p className="text-red-500 text-sm mt-1">{forgotError}</p>
@@ -198,9 +199,8 @@ export default function Login() {
               </button>
               <button
                 onClick={handleForgotPassword}
-                className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 ${
-                  isForgotLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 ${isForgotLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 disabled={isForgotLoading}
               >
                 {isForgotLoading ? "Submitting..." : "Submit"}
