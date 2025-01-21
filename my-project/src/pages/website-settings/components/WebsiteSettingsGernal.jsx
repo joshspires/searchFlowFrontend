@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
+import { useSelector } from "react-redux";
 // import { collections } from "../../../../demo";
 
-const WebsiteSettingsGernal = ({ siteData }) => {
+const WebsiteSettingsGernal = ({ siteData, siteId }) => {
   const { register, control, getValues, setValue, watch } = useFormContext();
   const { siteCollections, siteProducts } = siteData;
+  const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
+  const textAreaRef = useRef(null); // Reference to the textarea
 
   // Watch the searchFrom field
   const searchFrom = useWatch({
@@ -12,6 +15,15 @@ const WebsiteSettingsGernal = ({ siteData }) => {
     name: "searchFrom", // Specify the field to watch
   });
 
+
+  // Function to copy the text from the textarea
+  const handleCopy = () => {
+    if (textAreaRef.current) {
+      textAreaRef.current.select();
+      document.execCommand('copy'); // or use navigator.clipboard.writeText(textAreaRef.current.value);
+      alert('Code copied to clipboard!');
+    }
+  };
   // Watch specific fields for toggles and snippet
   const fuzzySearch = watch("searchEngineSettings.fuzzySearch");
   const instantSearchWidget = watch("searchEngineSettings.instantSearchWidget");
@@ -20,6 +32,75 @@ const WebsiteSettingsGernal = ({ siteData }) => {
   const handleToggleChange = (field) => {
     setValue(field, !getValues(field), { shouldDirty: true });
   };
+  const codeSnippet = `<div id="root"></div> <!-- Ensure this exists -->
+
+  <script>
+    // Immediately Invoked Function Expression (IIFE) to avoid polluting the global namespace
+    (function () {
+      // Retrieve userId and siteId from Redux store (simulated here)
+      const userId = "${userId}";
+      const siteId = "${siteId}";
+  
+      if (!userId || !siteId) {
+        console.error("userId or siteId not found.");
+        return;
+      }
+  
+      // Define the SearchFlowWidget object
+      const SearchFlowWidget = {
+        init: function (config) {
+          if (!config.siteId || !config.userId) {
+            console.error("SearchFlowWidget: Missing required configuration fields.");
+            return;
+          }
+          console.log("SearchFlowWidget initialized with config:", config);
+          this.loadWidget(config);
+        },
+        loadWidget: function (config) {
+          const rootElement = document.getElementById("root");
+          if (!rootElement) {
+            console.error("Root element not found.");
+            return;
+          }
+          rootElement.innerHTML = \`<p>Widget loaded for siteId: \${config.siteId}</p>\`;
+        },
+      };
+  
+      // Attach the SearchFlowWidget to the window for global access
+      window.SearchFlowWidget = SearchFlowWidget;
+  
+      // Define and expose \`apiUrl\` and \`siteId\` globally
+      window.appConfig = { userId, siteId };
+  
+      // Dynamically load the Tailwind CSS file
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "https://abrar341.github.io/search/widget.css"; // Update to your actual CSS URL
+      cssLink.onload = function () {
+        console.log("Tailwind CSS loaded successfully.");
+      };
+      cssLink.onerror = function () {
+        console.error("Failed to load Tailwind CSS:", cssLink.href);
+      };
+      document.head.appendChild(cssLink);
+  
+      // Dynamically load the main widget script
+      const script = document.createElement("script");
+      script.src = "https://abrar341.github.io/search/widget.iife.js"; // Update to your actual script URL
+      script.async = true;
+      script.onload = function () {
+        if (window.SearchFlowWidget) {
+          window.SearchFlowWidget.init({ userId, siteId });
+        } else {
+          console.error("SearchFlowWidget is not defined. Verify the script content.");
+        }
+      };
+      script.onerror = function () {
+        console.error("Failed to load the script:", script.src);
+      };
+      document.head.appendChild(script);
+    })();
+  </script>`;
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">
@@ -415,17 +496,26 @@ const WebsiteSettingsGernal = ({ siteData }) => {
 
           </div>
 
-          {/* Code Snippet */}
           <div>
             <h3 className="text-md font-medium mb-2">
               Add this snippet into the &lt;head&gt; section.
             </h3>
-            <textarea
-              className="w-full border min-h-[130px] max-h-[130px] outline-none border-black rounded-lg p-2 text-sm resize-none"
-              rows={2}
-              placeholder="Enter your code snippet here..."
-              {...register("searchEngineSettings.codeSnippet")}
-            ></textarea>
+            <div className="relative">
+              <textarea
+                ref={textAreaRef} // Set reference for textarea
+                className="w-full border min-h-[130px] h-[180px] outline-none border-black rounded-lg p-2 text-sm resize-none z-20"
+                rows={2}
+                placeholder="Enter your code snippet here..."
+                value={codeSnippet}
+                readOnly
+              ></textarea>
+              <button
+                onClick={handleCopy}
+                className="absolute top-1 right-1 px-2 py-1 bg-gray-500 text-white rounded-md"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
       </div>

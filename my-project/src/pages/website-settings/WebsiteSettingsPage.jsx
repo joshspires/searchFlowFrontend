@@ -12,12 +12,14 @@ import {
   postSearchPreference,
 } from "../../apiManager/setting";
 import { useSelector } from "react-redux";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Loader from "../../common/Loader";
 
 const WebsiteSettingsPage = () => {
   const [defaultValues, setDefaultValues] = useState({});
   const [siteData, setSiteData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false); // Loading state for fetching preferences
   const { id } = useParams();
 
   const form = useForm({
@@ -31,17 +33,9 @@ const WebsiteSettingsPage = () => {
 
   useEffect(() => {
     const fetchPreferences = async () => {
+      setIsFetching(true); // Start fetching
       try {
-
-        // later we remove this after by login the userId set
-        // const userIdToSet = "6767d5c65ac4ffa5809355f3"; // Replace with dynamic user ID
-
-        // localStorage.setItem("userId", userIdToSet);
-
-        // // Get the userId
-        // const userId = localStorage.getItem("userId");
-
-        const siteId = id // Replace with dynamic site ID
+        const siteId = id; // Replace with dynamic site ID
 
         const searchPreferences = await getSearchPreference(userId, siteId);
         console.log("searchPreferences", searchPreferences);
@@ -57,11 +51,13 @@ const WebsiteSettingsPage = () => {
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
+      } finally {
+        setIsFetching(false); // End fetching
       }
     };
 
     fetchPreferences();
-  }, [reset]);
+  }, [reset, id, userId]);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -82,15 +78,19 @@ const WebsiteSettingsPage = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl mx-2 mb-2 font-semibold">{"Websites name"}</h2>
         </div>
-        <FormProvider {...form}>
-          <DndProvider backend={HTML5Backend}>
-            <WebsiteSettingsGernal siteData={siteData} />
-            <SearchWidgetConf siteData={siteData} />
-            <SearchPageConf siteData={siteData} />
-          </DndProvider>
-        </FormProvider>
+        {isFetching ? (
+          <Loader />
+        ) : (
+          <FormProvider {...form}>
+            <DndProvider backend={HTML5Backend}>
+              <WebsiteSettingsGernal siteData={siteData} siteId={id} />
+              <SearchWidgetConf siteData={siteData} />
+              <SearchPageConf siteData={siteData} />
+            </DndProvider>
+          </FormProvider>
+        )}
       </div>
-      <div className="flex justify-end mx-2">
+      <div className={`flex ${isFetching && "hidden"} justify-end mx-2`}>
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
