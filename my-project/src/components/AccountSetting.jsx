@@ -10,6 +10,7 @@ export default function AccountSetting() {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
   const { userInfo } = useSelector((state) => state.auth);
@@ -55,14 +56,32 @@ export default function AccountSetting() {
       console.log("Update Response:", response);
       // Update the store with the new email and isEmailVerified values
       if (response) {
+        const modifiedResponse = {
+          ...response,
+          data: {
+            ...response.data,
+            userId: response.data._id, // Add userId alongside _id
+            webflowAccessToken: userInfo?.data.webflowAccessToken,
+            token: userInfo?.data.token
+          },
+        };
+
         dispatch(
           setCredentials({
-            ...response, // Include all the fields from the response
-            email: response?.data.email,
-            isEmailVerified: response?.data.isEmailVerified,
+            ...modifiedResponse, // Include all the fields from the modified response
+            email: modifiedResponse.data.email,
+            isEmailVerified: modifiedResponse.data.isEmailVerified,
           })
         );
       }
+
+      // Reset the form to default or updated values
+      reset({
+        firstName: "",
+        email: response?.data.email || email,
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
