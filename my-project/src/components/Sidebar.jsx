@@ -1,20 +1,56 @@
 import * as React from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation
 import SidebarItem from "./SidebarItem";
+import { useSelector } from "react-redux";
 
 export default function Sidebar() {
   const navigate = useNavigate(); // Initialize navigate function
   const location = useLocation(); // Get the current location
+  const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
+  const userRole = useSelector((state) => state.auth.userInfo?.data?.userRole); // Fetch the user role
 
+  // Define menu items conditionally
   const menuItems = [
-    { text: "Connected Websites", path: "/connected-websites" },
-    { text: "Settings", path: "/settings" },
+    ...(userRole === "admin" // Exclude "Connected Websites" if the user is an admin
+      ? [
+        {
+          text: "Admin",
+          path: "/admin-dashboard",
+          onClick: () => {
+            window.location.href = "/admin-dashboard"; // Force reload and redirect
+          },
+        }]
+      : []),
+    ...(userRole !== "admin" // Exclude "Connected Websites" if the user is an admin
+      ? [
+        { text: "Connected Websites", path: `/connected-websites?userId=${userId}`, onClick: () => navigate(`/connected-websites?userId=${userId}`) }
+      ]
+      : []),
+    { text: "Settings", path: "/settings", onClick: () => navigate("/settings") },
+
+
   ];
 
   const bottomMenuItems = [
-    { text: "Documentation", path: "/documentation" },
-    { text: "Support", path: "/support" },
-    { text: "Sign out", path: "/sign-out" },
+    {
+      text: "Documentation",
+      path: "/documentation",
+      onClick: () => navigate("/documentation"),
+    },
+    {
+      text: "Support",
+      path: "/support",
+      onClick: () => navigate("/support"),
+    },
+
+    {
+      text: "Sign out",
+      path: "/login",
+      onClick: () => {
+        localStorage.clear(); // Clear all local storage
+        window.location.href = "/"; // Force reload and redirect
+      },
+    },
   ];
 
   // Helper function to check if a menu item is active
@@ -34,7 +70,7 @@ export default function Sidebar() {
             key={index}
             text={item.text}
             isActive={isActive(item.path)} // Dynamically set active state
-            onClick={() => navigate(item.path)} // Navigate to the respective path
+            onClick={item.onClick} // Navigate to the respective path
           />
         ))}
       </div>
@@ -46,7 +82,7 @@ export default function Sidebar() {
             key={`bottom-${index}`}
             text={item.text}
             isActive={isActive(item.path)} // Dynamically set active state
-            onClick={() => navigate(item.path)} // Navigate to the respective path
+            onClick={item.onClick} // Navigate to the respective path
           />
         ))}
       </div>

@@ -10,7 +10,7 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
   };
 
   return (
-    <div className="flex flex-col p-4 bg-white rounded-lg border border-gray-300 shadow-md w-[339px]">
+    <div className="flex border border-black flex-col p-4 w-full bg-white rounded-xl w-[339px]">
       <div className="flex justify-between items-center mb-4">
         {/* Card Header */}
         <div>
@@ -23,7 +23,7 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
       </div>
 
       {/* Stats Section */}
-      <div className="flex flex-col gap-3 mb-4">
+      <div className="flex flex-col gap-3 border border-black rounded-xl p-3 mb-2 ">
         <div className="flex justify-between text-gray-700">
           <span className="text-sm">Total collections:</span>
           <span className="font-medium">{collections}</span>
@@ -39,7 +39,7 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
       </div>
 
       {/* Button */}
-      
+
       <button onClick={handleNavigate} className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md self-end">
         Settings
       </button>

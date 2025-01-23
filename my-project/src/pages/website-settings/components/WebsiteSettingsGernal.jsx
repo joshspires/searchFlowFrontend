@@ -32,75 +32,104 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
   const handleToggleChange = (field) => {
     setValue(field, !getValues(field), { shouldDirty: true });
   };
-  const codeSnippet = `<div id="root"></div> <!-- Ensure this exists -->
+  const codeSnippet = `
+<div id="searchWidget" style="display: none;">
+  <button id="closeButton" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px;">Close</button>
+  <div id="root">
+    <p>Widget loaded for siteId: ${siteId}</p>
+  </div>
+  <a id="viewAllButton" href="#" target="_blank" style="margin-top: 20px; background: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; display: inline-block; text-align: center; text-decoration: none;">View All Results</a>
+</div>
 
-  <script>
-    // Immediately Invoked Function Expression (IIFE) to avoid polluting the global namespace
-    (function () {
-      // Retrieve userId and siteId from Redux store (simulated here)
-      const userId = "${userId}";
-      const siteId = "${siteId}";
-  
-      if (!userId || !siteId) {
-        console.error("userId or siteId not found.");
+<!-- Static CSS -->
+<link rel="stylesheet" href="https://abrar341.github.io/search/widget.css" />
+
+<script defer>
+  (function () {
+    const userId = "${userId}";
+    const siteId = "${siteId}";
+
+    if (!userId || !siteId) {
+      console.error("userId or siteId not found.");
+      return;
+    }
+
+    const SearchFlowWidget = {
+      init: function (config) {
+        if (!config.siteId || !config.userId) {
+          console.error("SearchFlowWidget: Missing required configuration fields.");
+          return;
+        }
+        console.log("SearchFlowWidget initialized with config:", config);
+        this.loadWidget(config);
+      },
+      loadWidget: function (config) {
+        const rootElement = document.getElementById("root");
+        if (!rootElement) {
+          console.error("Root element not found.");
+          return;
+        }
+        rootElement.innerHTML = \`<p>Widget loaded for siteId: \${config.siteId}</p>\`;
+      },
+    };
+
+    window.SearchFlowWidget = SearchFlowWidget;
+    window.appConfig = { userId, siteId };
+
+    // DOMContentLoaded Event
+    document.addEventListener("DOMContentLoaded", function () {
+      const widget = document.getElementById("searchWidget");
+      const button = document.getElementById("searchWidgetButton");
+      const closeButton = document.getElementById("closeButton");
+      const viewAllButton = document.getElementById("viewAllButton");
+      const searchInput = document.getElementById("searchWidgetInput"); // Using the complex CSS selector
+
+      if (!button) {
+        console.error("SearchWidgetButton not found.");
         return;
       }
-  
-      // Define the SearchFlowWidget object
-      const SearchFlowWidget = {
-        init: function (config) {
-          if (!config.siteId || !config.userId) {
-            console.error("SearchFlowWidget: Missing required configuration fields.");
-            return;
+
+      // Toggle Widget Display
+      button.addEventListener("click", function () {
+        widget.style.display = widget.style.display === "none" ? "block" : "none";
+      });
+
+      // Close Widget
+      if (closeButton) {
+        closeButton.addEventListener("click", function () {
+          widget.style.display = "none";
+        });
+      }
+
+      // Update View All Button URL
+      if (viewAllButton && searchInput) {
+        // Update the button dynamically when typing
+        searchInput.addEventListener("input", function () {
+          const query = searchInput.value.trim();
+          viewAllButton.href = query
+            ? \`https://searchflow-test---search.webflow.io/search?q=\${encodeURIComponent(query)}\`
+            : "#";
+        });
+
+        // Handle button click if needed
+        viewAllButton.addEventListener("click", function (event) {
+          if (!searchInput.value.trim()) {
+            alert("Please enter a search query.");
+            event.preventDefault();
           }
-          console.log("SearchFlowWidget initialized with config:", config);
-          this.loadWidget(config);
-        },
-        loadWidget: function (config) {
-          const rootElement = document.getElementById("root");
-          if (!rootElement) {
-            console.error("Root element not found.");
-            return;
-          }
-          rootElement.innerHTML = \`<p>Widget loaded for siteId: \${config.siteId}</p>\`;
-        },
-      };
-  
-      // Attach the SearchFlowWidget to the window for global access
-      window.SearchFlowWidget = SearchFlowWidget;
-  
-      // Define and expose \`apiUrl\` and \`siteId\` globally
-      window.appConfig = { userId, siteId };
-  
-      // Dynamically load the Tailwind CSS file
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "https://abrar341.github.io/search/widget.css"; // Update to your actual CSS URL
-      cssLink.onload = function () {
-        console.log("Tailwind CSS loaded successfully.");
-      };
-      cssLink.onerror = function () {
-        console.error("Failed to load Tailwind CSS:", cssLink.href);
-      };
-      document.head.appendChild(cssLink);
-  
-      // Dynamically load the main widget script
-      const script = document.createElement("script");
-      script.src = "https://abrar341.github.io/search/widget.iife.js"; // Update to your actual script URL
-      script.async = true;
-      script.onload = function () {
-        if (window.SearchFlowWidget) {
-          window.SearchFlowWidget.init({ userId, siteId });
-        } else {
-          console.error("SearchFlowWidget is not defined. Verify the script content.");
-        }
-      };
-      script.onerror = function () {
-        console.error("Failed to load the script:", script.src);
-      };
-      document.head.appendChild(script);
-    })();
-  </script>`;
+        });
+      } else {
+        console.error("Search input or View All button not found.");
+      }
+    });
+  })();
+</script>
+
+<!-- Static JS -->
+<script defer src="https://abrar341.github.io/search/widget.iife.js"></script>
+`;
+
+
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">

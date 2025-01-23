@@ -20,11 +20,13 @@ export default function Login() {
 
   const { userInfo } = useSelector((state) => state.auth);
   const userId = userInfo?.data.userId;
-  console.log(userId);
 
   useEffect(() => {
     if (userInfo) {
-      if (!userInfo.data.isEmailVerified) {
+      if (userInfo.data.userRole === 'admin') {
+        navigate("/admin-dashboard");
+      }
+      else if (!userInfo.data.isEmailVerified) {
         navigate("/verify-email");
       } else if (userInfo.data.webflowAccessToken == null) {
         navigate("/connect-webflow");
@@ -58,9 +60,12 @@ export default function Login() {
         return;
       }
       dispatch(setCredentials({ ...res }));
-      navigate(res.data.isEmailVerified ? "/dashboard" : "/verify-email");
+      navigate(res.data.isEmailVerified ? navigate(`/dashboard?userId=${userId}`) : "/verify-email");
     } catch (err) {
-      setErrors({ apiError: err.message || "An error occurred during login." });
+      if (err?.data?.data) {
+        dispatch(setCredentials({ ...err?.data }));
+      }
+      setErrors({ apiError: err?.data.message || "An error occurred during login." });
     }
   };
 
@@ -97,8 +102,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-96 p-8 bg-white shadow-lg rounded-lg">
+    <div className="flex border items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-96 px-5 py-8 bg-white border border-black rounded-lg ">
         {errors.apiError && (
           <p className="text-red-500 text-center mb-4">{errors.apiError}</p>
         )}
@@ -124,7 +129,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none"
             placeholder="Enter your email"
           />
           {errors.email && (
@@ -141,7 +146,7 @@ export default function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none"
             placeholder="Enter your password"
           />
           {errors.password && (
@@ -169,7 +174,7 @@ export default function Login() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
+          <div className="bg-white p-6 rounded-lg  w-full max-w-sm">
             <h2 className="text-lg font-bold mb-4">Forgot Password</h2>
             <label className="block text-gray-700 font-medium mb-1">
               Enter your email:

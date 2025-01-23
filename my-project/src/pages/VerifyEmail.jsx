@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { verifycode, resendVerificationCode } from "../apiManager/user";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
@@ -10,7 +10,9 @@ const EmailVerification = () => {
   const [error, setError] = useState(""); // State for error messages
   const [success, setSuccess] = useState(""); // State for success messages
   const [isLoading, setIsLoading] = useState(false); // State for loading
+  const [resendisLoading, setResendIsLoading] = useState(false); // State for loading
   const email = useSelector((state) => state.auth.userInfo.data.email); // Get email from Redux
+  const userStatus = useSelector((state) => state.auth.userInfo.data.userStatus); // Get email from Redux
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -50,7 +52,8 @@ const EmailVerification = () => {
         alert(response.message || "Invalid verification code.");
       }
     } catch (err) {
-      setError("An error occurred while verifying the code. Please try again.");
+
+      setError(err?.response.data.message || "An error occurred while verifying the code. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -58,20 +61,23 @@ const EmailVerification = () => {
 
   // Handle Resend Verification Code
   const handleResend = async () => {
-    setIsLoading(true);
+    setResendIsLoading(true);
     try {
-        const response = await resendVerificationCode(email); // API call
-        if (response.data) {
-            toast.success("Verification code has been resent successfully!");
-        } else {
-            alert(response.message);
-        }
+      const response = await resendVerificationCode(email); // API call
+
+      if (response.data) {
+        // toast.success("Verification code has been resent successfully!");
+      } else {
+        alert(response.message);
+      }
     } catch (error) {
-        setError("An error occurred while resending the code. Please try again.");
-    }finally{
-        setIsLoading(false);
+
+      setError("An error occurred while resending the code. Please try again.");
+    } finally {
+      setResendIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -106,9 +112,8 @@ const EmailVerification = () => {
 
         <button
           onClick={handleSubmit}
-          className={`w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300 ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           disabled={isLoading}
         >
           {isLoading ? "Verifying..." : "Verify"}
@@ -118,7 +123,9 @@ const EmailVerification = () => {
           onClick={handleResend}
           className="w-full mt-4 py-2 rounded border hover:bg-black-100 text-blue-500"
         >
-          Resend Verification Email
+          {
+            resendisLoading ? "Resending Email..." : "Resend Verification Email"
+          }
         </button>
       </div>
     </div>

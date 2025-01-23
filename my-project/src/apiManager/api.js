@@ -24,6 +24,7 @@ api.interceptors.request.use(
     console.error("Interceptor request error:", error);
     return Promise.reject(error);
   }
+
 );
 
 export default api;

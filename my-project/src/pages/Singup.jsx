@@ -42,7 +42,7 @@ export default function Signup() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-96 p-8 bg-white shadow-lg rounded-lg">
+      <div className="w-96 px-5 py-10 bg-white border border-black  rounded-lg">
         {/* Error Alert */}
         {error.apiError && (
           <div className="bg-red-100 text-red-700 border border-red-400 p-2 rounded mb-4">
@@ -54,9 +54,9 @@ export default function Signup() {
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">searchFlow</h2>
         <p className="text-sm text-center text-gray-600 mb-6">Already have an account? {" "}
           <span
-        onClick={() => navigate("/login")}
-        className="text-blue-500 hover:underline cursor-pointer"
-      >Login</span>
+            onClick={() => navigate("/login")}
+            className="text-blue-500 hover:underline cursor-pointer"
+          >Login</span>
           .</p>
 
         {/* Email Field */}
@@ -69,9 +69,8 @@ export default function Signup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            className={`w-full border ${
-              error.email ? "border-red-500" : "border-gray-300"
-            } rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`w-full border ${error.email ? "border-red-500" : "border-black"
+              } w-full px-4 py-3 text-gray-700 bg-white border border-black rounded rounded px-3 py-2 focus:outline-none `}
             placeholder="Enter your email"
           />
           {error.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
@@ -87,9 +86,8 @@ export default function Signup() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
-            className={`w-full border ${
-              error.password ? "border-red-500" : "border-gray-300"
-            } rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`w-full border ${error.password ? "border-red-500" : "border-black"
+              }px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none rounded px-3 py-2`}
             placeholder="Enter your password"
           />
           {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}

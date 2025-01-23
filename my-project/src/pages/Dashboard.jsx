@@ -10,35 +10,33 @@ import { useSearchParams } from "react-router-dom";
 export default function Dashboard() {
   const [searchParams] = useSearchParams();
   const userId = searchParams.get("userId");
-  console.log("userId dashboard", userId);
+  console.log(userId);
 
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  // const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
   const dashboardData = useSelector((state) => state.dashboard.data); // Accessing Redux state
 
   useEffect(() => {
-
-    // Fetch data only if not already available
-    (async () => {
-      setLoading(true);
-      try {
-        console.log("userId", userId);
-        setTimeout(async () => {
+    // Fetch data only if it's not already in Redux
+    if (!dashboardData || dashboardData.length === 0) {
+      (async () => {
+        setLoading(true);
+        try {
+          console.log("Fetching dashboard data for userId:", userId);
           const res = await getDashboardData(userId);
           dispatch(setDashboardData(res?.data)); // Store data in Redux
-        }, 2000);
-      } catch (error) {
-        console.error(error);
-        alert(
-          error.response?.data?.message ||
-          "Error occurred while fetching the data"
-        );
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [userId]);
+        } catch (error) {
+          console.error(error);
+          alert(
+            error.response?.data?.message ||
+            "Error occurred while fetching the data"
+          );
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [userId, dashboardData, dispatch]);
 
   if (loading) return <Loader />;
 
@@ -54,7 +52,7 @@ export default function Dashboard() {
         </div>
 
         {/* Website Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dashboardData?.map((website, index) => (
             <WebsiteCard
               key={index} // Unique key for each card

@@ -13,6 +13,7 @@ import ConnectWebflow from "./pages/ConnectWebflow";
 import ResetPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./common/ProtectedRoute";
 import WebsiteSettingsPage from "./pages/website-settings/WebsiteSettingsPage";
+import AdminSettingsPage from "./pages/AdminSettingsPage";
 
 const adminRoutes = [
   { path: "/dashboard", element: <Dashboard /> },
@@ -23,7 +24,9 @@ const adminRoutes = [
   },
   { path: "/settings", element: <Setting /> },
   { path: "/connect-webflow", element: <ConnectWebflow /> },
+  { path: "/admin-dashboard", element: <AdminSettingsPage />, adminOnly: true },
 ];
+
 export default function App() {
   return (
     <Router>
@@ -39,11 +42,14 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" />} />
 
         {/* protectedRoutes */}
-        {adminRoutes.map(({ path, element }) => (
+        {/* Protected Routes */}
+        {adminRoutes.map(({ path, element, adminOnly }) => (
           <Route
             key={path}
             path={path}
-            element={<ProtectedRoute>{element}</ProtectedRoute>}
+            element={
+              <ProtectedRoute adminOnly={adminOnly}>{element}</ProtectedRoute>
+            }
           />
         ))}
       </Routes>
