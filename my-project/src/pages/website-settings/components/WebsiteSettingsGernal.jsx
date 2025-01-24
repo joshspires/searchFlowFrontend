@@ -82,7 +82,7 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
       const button = document.getElementById("searchWidgetButton");
       const closeButton = document.getElementById("closeButton");
       const viewAllButton = document.getElementById("viewAllButton");
-      const searchInput = document.getElementById("searchWidgetInput"); // Using the complex CSS selector
+      const searchInput = document.getElementById("searchWidgetInput");
 
       if (!button) {
         console.error("SearchWidgetButton not found.");
@@ -91,7 +91,8 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
 
       // Toggle Widget Display
       button.addEventListener("click", function () {
-        widget.style.display = widget.style.display === "none" ? "block" : "none";
+        const event = new Event("widgetOpen");
+        window.dispatchEvent(event);
       });
 
       // Close Widget
@@ -103,7 +104,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
 
       // Update View All Button URL
       if (viewAllButton && searchInput) {
-        // Update the button dynamically when typing
         searchInput.addEventListener("input", function () {
           const query = searchInput.value.trim();
           viewAllButton.href = query
@@ -111,7 +111,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
             : "#";
         });
 
-        // Handle button click if needed
         viewAllButton.addEventListener("click", function (event) {
           if (!searchInput.value.trim()) {
             alert("Please enter a search query.");
@@ -126,7 +125,7 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
 </script>
 
 <!-- Static JS -->
-<script defer src="https://abrar341.github.io/search/widget.iife.js"></script>
+<script defer src="https://search-five-delta.vercel.app/widget.iife.js"></script>
 `;
 
 
