@@ -15,58 +15,47 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const dashboardData = useSelector((state) => state.dashboard.data);
 
+  const connectToEventSource = (retryCount = 0) => {
+    const MAX_RETRIES = 5;
+    const RETRY_DELAY = Math.min(1000 * 2 ** retryCount, 30000);
+
+    const eventSource = new EventSource(
+      `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/getDashboardData/${userId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event?.data);
+        if (data?.status === "in-progress") {
+          setProgressMessage(data.message || `Progress: ${data.progress || 0}%`);
+        } else if (data?.status === "completed") {
+          setProgressMessage("Data Loaded Successfully!");
+          dispatch(setDashboardData(data?.data));
+          setLoading(false);
+          eventSource.close();
+        }
+      } catch (error) {
+        console.warn("Unexpected SSE data format:", event?.data);
+      }
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+      if (retryCount < MAX_RETRIES) {
+        setTimeout(() => connectToEventSource(retryCount + 1), RETRY_DELAY);
+      } else {
+        setErrorMessage("Failed to fetch data after multiple attempts. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    return eventSource;
+  };
+
   useEffect(() => {
     if (!dashboardData || dashboardData.length === 0) {
       setLoading(true);
-
-      const eventSource = new EventSource(
-        `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/getDashboardData/${userId}`
-      );
-
-      eventSource.onmessage = (event) => {
-        try {
-          // console.log(event.data);
-
-          // Remove "data:" prefix and trim whitespace
-          // const rawData = event.data.trim();
-
-          // // Handle plain text messages (e.g., "Connection established")
-          // if (!rawData.startsWith("{") && !rawData.startsWith("[")) {
-          //   console.log("Message from server:", rawData);
-          //   return;
-          // }
-
-          // // Parse JSON messages
-          // console.log("dsdas", event.data);
-          // const data = extractDetailedData(event.data)
-          const data = JSON.parse(event?.data);
-          console.log("data", data);
-
-          if (data?.status === "in-progress") {
-            setProgressMessage((prev) => Math.min(prev + 10, 100)); // Example: increment progress
-            console.log(data?.status);
-
-            // setStatus(data.message);
-          } else if (data?.status === "completed") {
-            setProgressMessage(100);
-            // setStatus(data.message);
-            console.log(data?.status);
-
-            dispatch(setDashboardData(data?.data)); // Store data in Redux  
-            setLoading(false);
-            eventSource.close(); // Close the connection
-          }
-        } catch (error) {
-          console.error("Error parsing SSE data:", error, event.data);
-        }
-      };
-
-      eventSource.onerror = (err) => {
-        console.error("SSE connection error:", err);
-        setErrorMessage("Failed to fetch data. Please try again later.");
-        setLoading(false);
-        eventSource.close();
-      };
+      const eventSource = connectToEventSource();
 
       return () => {
         eventSource.close();
@@ -103,7 +92,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dashboardData?.map((website, index) => (
             <WebsiteCard
-              key={website.webflowSiteId} // Use webflowSiteId as a unique key
+              key={website.webflowSiteId}
               name={website.websiteName}
               lastSync={new Date(website.lastSync).toLocaleString()}
               collections={website.totalCollections}
@@ -117,29 +106,3 @@ export default function Dashboard() {
     </MainLayout>
   );
 }
-function extractDetailedData(data) {
-  // Split the data into lines
-  const lines = data.split("\n").filter(line => line.trim());
-  let dashboardData = null;
-
-  lines.forEach(line => {
-    if (line.startsWith("data:")) {
-      const content = line.slice(5).trim(); // Remove "data: " prefix
-      try {
-        const parsedContent = JSON.parse(content);
-        if (parsedContent.status === "completed" && parsedContent.data) {
-          dashboardData = parsedContent; // Capture the detailed JSON
-        }
-      } catch (error) {
-        // Skip lines that are not JSON
-      }
-    }
-  });
-
-  if (dashboardData) {
-    console.log("Detailed Dashboard Data:", JSON.stringify(dashboardData, null, 2));
-  } else {
-    console.log("No detailed dashboard data found.");
-  }
-}
-
