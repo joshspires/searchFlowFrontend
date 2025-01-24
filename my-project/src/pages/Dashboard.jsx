@@ -74,8 +74,9 @@ export default function Dashboard() {
 
   if (errorMessage)
     return (
-      <div className="text-center text-red-500">
+      <div className="text-center flex flex-col justify-center items-center  h-[100vh] text-red-500">
         <p>{errorMessage}</p>
+        <button onClick={() => { connectToEventSource() }} className="border rounded-lg border-red-500 mt-2 px-4 py-2">Retry</button>
       </div>
     );
 
