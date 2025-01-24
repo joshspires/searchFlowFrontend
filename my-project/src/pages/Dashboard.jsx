@@ -16,7 +16,7 @@ export default function Dashboard() {
   const dashboardData = useSelector((state) => state.dashboard.data);
 
   const connectToEventSource = (retryCount = 0) => {
-    const MAX_RETRIES = 5;
+    const MAX_RETRIES = 10;
     const RETRY_DELAY = Math.min(1000 * 2 ** retryCount, 30000);
 
     const eventSource = new EventSource(
