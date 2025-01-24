@@ -25,11 +25,11 @@ export const getDataOfSiteAndUser = async (userId, siteId) => {
     return res.data;
 };
 export const getAllUsers = async () => {
-    const res = await api.get(`http://localhost:3003/api/userManagementRoutes/getAllUsers`);
+    const res = await api.get(`/userManagementRoutes/getAllUsers`);
     return res.data;
 };
 export const updateUser = async (userId, data) => {
-    const res = await api.patch(`http://localhost:3003/api/userManagementRoutes/updateUser/${userId}`, data);
+    const res = await api.patch(`/userManagementRoutes/updateUser/${userId}`, data);
     return res.data;
 };
 
