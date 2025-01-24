@@ -43,16 +43,17 @@ export default function Dashboard() {
           console.log("data", data);
 
           if (data?.status === "in-progress") {
-            // setProgressMessage((prev) => Math.min(prev + 10, 100)); // Example: increment progress
+            setProgressMessage((prev) => Math.min(prev + 10, 100)); // Example: increment progress
             console.log(data?.status);
 
             // setStatus(data.message);
           } else if (data?.status === "completed") {
-            // setProgressMessage(100);
+            setProgressMessage(100);
             // setStatus(data.message);
             console.log(data?.status);
 
-            setDashboardData(data.data);
+            dispatch(setDashboardData(data?.data)); // Store data in Redux  
+            setLoading(false);
             eventSource.close(); // Close the connection
           }
         } catch (error) {
@@ -73,14 +74,14 @@ export default function Dashboard() {
     }
   }, [userId, dashboardData, dispatch]);
 
-  // if (loading)
-  //   return (
-  //     <Loader>
-  //       {progressMessage && (
-  //         <p className="mt-4 text-center text-black">{progressMessage}</p>
-  //       )}
-  //     </Loader>
-  //   );
+  if (loading)
+    return (
+      <Loader>
+        {progressMessage && (
+          <p className="mt-4 text-center text-black">{progressMessage}</p>
+        )}
+      </Loader>
+    );
 
   if (errorMessage)
     return (
@@ -141,3 +142,4 @@ function extractDetailedData(data) {
     console.log("No detailed dashboard data found.");
   }
 }
+
