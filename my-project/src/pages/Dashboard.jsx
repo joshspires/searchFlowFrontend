@@ -5,6 +5,7 @@ import Loader from "../common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardData } from "../slices/dashboardSlice";
 import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
   const [searchParams] = useSearchParams();
@@ -16,20 +17,24 @@ export default function Dashboard() {
   const dashboardData = useSelector((state) => state.dashboard.data);
 
   const connectToEventSource = (retryCount = 0) => {
-    const MAX_RETRIES = 10;
+    const MAX_RETRIES = 5;
     const RETRY_DELAY = Math.min(1000 * 2 ** retryCount, 30000);
 
     const eventSource = new EventSource(
       `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/getDashboardData/${userId}`
     );
 
+    console.log("eventSource", eventSource);
+
     eventSource.onmessage = (event) => {
+      console.log("eventSource", event);
       try {
         const data = JSON.parse(event?.data);
         if (data?.status === "in-progress") {
           setProgressMessage(data.message || `Progress: ${data.progress || 0}%`);
         } else if (data?.status === "completed") {
           setProgressMessage("Data Loaded Successfully!");
+
           dispatch(setDashboardData(data?.data));
           setLoading(false);
           eventSource.close();
