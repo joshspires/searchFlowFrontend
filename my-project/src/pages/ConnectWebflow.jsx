@@ -14,11 +14,13 @@ function ConnectWebflow() {
       // Redirect directly to the backend endpoint
       const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
       // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
-      window.location.href = url;
+      console.log("url1", url);
+
+      // window.location.href = url;
     } catch (error) {
       alert(
         error.response?.data?.message ||
-          "Error occurred while connecting to Webflow"
+        "Error occurred while connecting to Webflow"
       );
     } finally {
       setLoading(false);
