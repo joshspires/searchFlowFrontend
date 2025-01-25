@@ -89,22 +89,17 @@ export default function Dashboard() {
           <h2 className="text-2xl font-semibold">Connected Websites</h2>
           <button
             onClick={async () => {
+              setLoading(true);
               try {
-                setLoading(true);
-                toast.loading("Connecting to new website...");
-
-                const response = await connectNewWebFlowSite(userId); // Call the function
-
-                // console.log("response", response);
-                // if (response) {
-                //   // Redirect to the URL from the response
-                //   // const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
-                //   // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
-                //   window.location.href = url;
-                // }
+                // Redirect directly to the backend endpoint
+                const url = connectNewWebFlowSite(userId)
+                // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+                window.location.href = url;
               } catch (error) {
-                toast.dismiss();
-                toast.error("Failed to connect the website. Please try again.");
+                alert(
+                  error.response?.data?.message ||
+                  "Error occurred while connecting to Webflow"
+                );
               } finally {
                 setLoading(false);
               }
