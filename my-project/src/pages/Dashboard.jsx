@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDashboardData } from "../slices/dashboardSlice";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { connectNewWebFlowSite } from "../apiManager/setting";
 
 export default function Dashboard() {
   const [searchParams] = useSearchParams();
@@ -86,9 +87,30 @@ export default function Dashboard() {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Connected Websites</h2>
-          <button className="px-4 py-2 text-white bg-black rounded-md">
+          <button
+            onClick={async () => {
+              try {
+                setLoading(true);
+                toast.loading("Connecting to new website...");
+                const response = await connectNewWebFlowSite(userId); // Call the function
+                console.log("response", response);
+
+                toast.dismiss();
+                toast.success("Website connected successfully!");
+                // Optionally, update the state if necessary (depends on API response structure)
+                dispatch(setDashboardData(response?.data)); // Update dashboard data
+              } catch (error) {
+                toast.dismiss();
+                toast.error("Failed to connect the website. Please try again.");
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="px-4 py-2 text-white bg-black rounded-md"
+          >
             + Add New Website
           </button>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

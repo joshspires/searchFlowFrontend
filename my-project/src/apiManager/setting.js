@@ -32,5 +32,16 @@ export const updateUser = async (userId, data) => {
     const res = await api.patch(`/userManagementRoutes/updateUser/${userId}`, data);
     return res.data;
 };
+export const connectNewWebFlowSite = async (userId) => {
+    console.log("userId", userId);
 
+    const res = await api.post(
+        `http://localhost:3003/api/webFlowManagementRoutes/connectNewWebFlowSite`,
+        {}, // Pass an empty object for the POST body
+        {
+            params: { userId }, // Add the query parameter here
+        }
+    );
+    return res.data;
+};
 
