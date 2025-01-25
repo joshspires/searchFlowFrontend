@@ -36,7 +36,7 @@ export const connectNewWebFlowSite = async (userId) => {
     console.log("userId", userId);
 
     const res = await api.post(
-        `http://localhost:3003/api/webFlowManagementRoutes/connectNewWebFlowSite`,
+        `/webFlowManagementRoutes/connectNewWebFlowSite`,
         {}, // Pass an empty object for the POST body
         {
             params: { userId }, // Add the query parameter here
