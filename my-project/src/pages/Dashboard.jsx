@@ -93,6 +93,8 @@ export default function Dashboard() {
               try {
                 // Redirect directly to the backend endpoint
                 const url = await connectNewWebFlowSite(userId)
+                console.log("url", url);
+
                 // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
                 // window.location.href = url;
               } catch (error) {
