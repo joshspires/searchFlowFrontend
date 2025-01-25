@@ -27,13 +27,26 @@ export default function Dashboard() {
     console.log("eventSource", eventSource);
 
     eventSource.onmessage = (event) => {
-      console.log("eventSource", event);
       try {
         const data = JSON.parse(event?.data);
+        console.log("event", data);
+        // toast.dismiss()
+        toast.success(data.message)
+
         if (data?.status === "in-progress") {
           setProgressMessage(data.message || `Progress: ${data.progress || 0}%`);
+          toast.success(data.progress)
+          console.log("data.progress", data.progress);
+
+          // toast.dismiss()
+
+          toast.success(data.message)
+
         } else if (data?.status === "completed") {
           setProgressMessage("Data Loaded Successfully!");
+          console.log(progressMessage);
+          // toast.dismiss()
+          toast.success(data.message)
 
           dispatch(setDashboardData(data?.data));
           setLoading(false);
@@ -61,7 +74,6 @@ export default function Dashboard() {
     if (!dashboardData || dashboardData.length === 0) {
       setLoading(true);
       const eventSource = connectToEventSource();
-
       return () => {
         eventSource.close();
       };

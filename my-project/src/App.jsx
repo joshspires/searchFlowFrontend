@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./common/ProtectedRoute";
 import WebsiteSettingsPage from "./pages/website-settings/WebsiteSettingsPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import { Toaster } from "react-hot-toast";
 
 const adminRoutes = [
   { path: "/dashboard", element: <Dashboard /> },
@@ -30,6 +31,7 @@ const adminRoutes = [
 export default function App() {
   return (
     <Router>
+      <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Login />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}

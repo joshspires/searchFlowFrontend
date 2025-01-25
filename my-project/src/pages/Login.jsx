@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/userApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { forgotPassword } from "../apiManager/user";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -66,6 +67,8 @@ export default function Login() {
         dispatch(setCredentials({ ...err?.data }));
       }
       setErrors({ apiError: err?.data.message || "An error occurred during login." });
+      toast.dismiss()
+      toast.error(err?.data.message || "Error occured")
     }
   };
 
