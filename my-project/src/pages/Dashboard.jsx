@@ -94,7 +94,7 @@ export default function Dashboard() {
                 // Redirect directly to the backend endpoint
                 // await connectNewWebFlowSite(userId)
                 // console.log("url", url);
-                const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+                const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectNewWebFlowSite?userId=${userId}`;
                 // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
                 window.location.href = url;
               } catch (error) {

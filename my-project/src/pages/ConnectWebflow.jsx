@@ -12,11 +12,12 @@ function ConnectWebflow() {
     setLoading(true);
     try {
       // Redirect directly to the backend endpoint
+      // https://searchflow-ed703fb051f2.herokuapp.com
       const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
       // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
-      console.log("url1", url);
+      // console.log("url1", url);
 
-      // window.location.href = url;
+      window.location.href = url;
     } catch (error) {
       alert(
         error.response?.data?.message ||
