@@ -17,8 +17,6 @@ export default function Dashboard() {
   const dashboardData = useSelector((state) => state.dashboard.data);
 
   const connectToEventSource = (retryCount = 0) => {
-    const MAX_RETRIES = 2;
-    const RETRY_DELAY = Math.min(1000 * 2 ** retryCount, 30000);
 
     const eventSource = new EventSource(
       `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/getDashboardData/${userId}`
@@ -33,7 +31,7 @@ export default function Dashboard() {
         toast.dismiss()
         toast.success(data.message)
         if (data?.status === "in-progress") {
-          setProgressMessage(data.status);
+          setProgressMessage("Please be patient. Your data is being processed and it might take few minutes to completed");
         } else if (data?.status === "completed") {
           setProgressMessage("Data Loaded Successfully!");
           console.log(progressMessage);
@@ -50,12 +48,8 @@ export default function Dashboard() {
 
     eventSource.onerror = () => {
       eventSource.close();
-      if (retryCount < MAX_RETRIES) {
-        setTimeout(() => connectToEventSource(retryCount + 1), RETRY_DELAY);
-      } else {
-        setErrorMessage("Failed to fetch data after multiple attempts. Please try again later.");
-        setLoading(false);
-      }
+      setErrorMessage("Failed to fetch data after multiple attempts. Please try again later.");
+      setLoading(false);
     };
 
     return eventSource;
@@ -73,11 +67,10 @@ export default function Dashboard() {
 
   if (loading)
     return (
-      <Loader>
-        {progressMessage && (
-          <p className="mt-4 text-center text-black">{progressMessage}</p>
-        )}
-      </Loader>
+      <>
+        <p className="mt-4 text-center text-black">{progressMessage}</p>
+        <Loader />
+      </>
     );
 
   if (errorMessage)
