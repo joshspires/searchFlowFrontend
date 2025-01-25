@@ -17,7 +17,7 @@ export default function Dashboard() {
   const dashboardData = useSelector((state) => state.dashboard.data);
 
   const connectToEventSource = (retryCount = 0) => {
-    const MAX_RETRIES = 5;
+    const MAX_RETRIES = 2;
     const RETRY_DELAY = Math.min(1000 * 2 ** retryCount, 30000);
 
     const eventSource = new EventSource(
@@ -30,24 +30,15 @@ export default function Dashboard() {
       try {
         const data = JSON.parse(event?.data);
         console.log("event", data);
-        // toast.dismiss()
+        toast.dismiss()
         toast.success(data.message)
-
         if (data?.status === "in-progress") {
-          setProgressMessage(data.message || `Progress: ${data.progress || 0}%`);
-          toast.success(data.progress)
-          console.log("data.progress", data.progress);
-
-          // toast.dismiss()
-
-          toast.success(data.message)
-
+          setProgressMessage(data.status);
         } else if (data?.status === "completed") {
           setProgressMessage("Data Loaded Successfully!");
           console.log(progressMessage);
-          // toast.dismiss()
+          toast.dismiss()
           toast.success(data.message)
-
           dispatch(setDashboardData(data?.data));
           setLoading(false);
           eventSource.close();

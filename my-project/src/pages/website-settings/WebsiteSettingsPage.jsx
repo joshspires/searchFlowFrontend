@@ -14,6 +14,7 @@ import {
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Loader from "../../common/Loader";
+import toast from "react-hot-toast";
 
 const WebsiteSettingsPage = () => {
   const [defaultValues, setDefaultValues] = useState({});
@@ -65,6 +66,8 @@ const WebsiteSettingsPage = () => {
       console.log("Submitting Form Data:", data);
       const response = await postSearchPreference(data);
       console.log("Preferences Saved successfully:", response);
+      toast.dismiss()
+      toast.success(response?.message)
     } catch (error) {
       console.error("Failed to save preferences:", error);
     } finally {

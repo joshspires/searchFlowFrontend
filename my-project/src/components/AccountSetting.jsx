@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../apiManager/setting";
 import { setCredentials } from "../slices/authSlice";
+import toast from "react-hot-toast";
 
 export default function AccountSetting() {
   const {
@@ -54,6 +55,8 @@ export default function AccountSetting() {
       setIsLoading(true); // Set loading state
       const response = await updateUser(userId, formattedData);
       console.log("Update Response:", response);
+      toast.dismiss()
+      toast.success(response?.message)
       // Update the store with the new email and isEmailVerified values
       if (response) {
         const modifiedResponse = {
