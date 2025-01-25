@@ -92,13 +92,16 @@ export default function Dashboard() {
               try {
                 setLoading(true);
                 toast.loading("Connecting to new website...");
-                const response = await connectNewWebFlowSite(userId); // Call the function
-                console.log("response", response);
 
-                toast.dismiss();
-                toast.success("Website connected successfully!");
-                // Optionally, update the state if necessary (depends on API response structure)
-                dispatch(setDashboardData(response?.data)); // Update dashboard data
+                const response = await connectNewWebFlowSite(userId); // Call the function
+
+                // console.log("response", response);
+                // if (response) {
+                //   // Redirect to the URL from the response
+                //   // const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+                //   // const url = `http://localhost:3003/api/webFlowManagementRoutes/connectToWebFlowAccount/${userId}`;
+                //   window.location.href = url;
+                // }
               } catch (error) {
                 toast.dismiss();
                 toast.error("Failed to connect the website. Please try again.");
@@ -110,6 +113,7 @@ export default function Dashboard() {
           >
             + Add New Website
           </button>
+
 
         </div>
 
