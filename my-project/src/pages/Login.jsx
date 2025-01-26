@@ -6,7 +6,9 @@ import { setCredentials } from "../slices/authSlice";
 import { forgotPassword } from "../apiManager/user";
 import toast from "react-hot-toast";
 
+
 export default function Login() {
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login] = useLoginMutation();
@@ -54,6 +56,8 @@ export default function Login() {
   const submitHandler = async (e) => {
     e.preventDefault();
     if (!validateInputs()) return;
+    setIsLoginLoading(true);
+
     try {
       const res = await login({ email, password }).unwrap();
       if (!res.data) {
@@ -69,6 +73,8 @@ export default function Login() {
       setErrors({ apiError: err?.data.message || "An error occurred during login." });
       toast.dismiss()
       toast.error(err?.data.message || "Error occured")
+    } finally {
+      setIsLoginLoading(false);
     }
   };
 
@@ -171,7 +177,7 @@ export default function Login() {
           type="submit"
           className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300"
         >
-          Login
+          {isLoginLoading ? "Logging in..." : "Login"}
         </button>
       </div>
 

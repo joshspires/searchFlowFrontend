@@ -19,6 +19,9 @@ export default function AccountSetting() {
   const userId = userInfo?.data.userId;
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = React.useState(false);
+  const [showNewPassword, setShowNewPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
 
   React.useEffect(() => {
     if (email) {
@@ -140,17 +143,29 @@ export default function AccountSetting() {
             <label htmlFor="newPassword" className="mb-1 text-sm font-medium text-gray-800">
               New password
             </label>
-            <input
-              type="password"
-              id="newPassword"
-              {...register("newPassword", {
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
-              })}
-              className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
-            />
+            <div className="relative">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                id="newPassword"
+                {...register("newPassword", {
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+                className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-600"
+              >
+                {showNewPassword ?
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                  :
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>}
+              </button>
+            </div>
             {errors.newPassword && (
               <span className="text-red-500 text-sm mt-1">{errors.newPassword.message}</span>
             )}
@@ -161,19 +176,29 @@ export default function AccountSetting() {
             <label htmlFor="confirmPassword" className="mb-1 text-sm font-medium text-gray-800">
               Confirm new password
             </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              {...register("confirmPassword", {
-                validate: (value) =>
-                  value === watch("newPassword") || "Passwords do not match",
-              })}
-              className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                {...register("confirmPassword", {
+                  validate: (value) =>
+                    value === watch("newPassword") || "Passwords do not match",
+                })}
+                className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-600"
+              >
+                {showConfirmPassword ? <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg> : <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <span className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</span>
             )}
           </div>
+
         </div>
         <div className="w-full flex justify-end items-center">
           <button
