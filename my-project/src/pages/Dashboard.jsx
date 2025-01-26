@@ -27,6 +27,7 @@ export default function Dashboard() {
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event?.data);
+
         toast.dismiss();
         if (data.message === "Connection Established") {
           toast.success(data.message);
@@ -51,9 +52,11 @@ export default function Dashboard() {
     eventSource.onerror = () => {
       eventSource.close();
       setErrorMessage(
-        "Failed to fetch data after multiple attempts. Please try again later."
+        "Failed to fetch data."
       );
       setLoading(false);
+      navigate("/connect-webflow")
+
     };
 
     return eventSource;
@@ -93,10 +96,13 @@ export default function Dashboard() {
   if (loading)
     return (
       <>
-        <p className="mt-6 text-center text-lg font-medium text-gray-800">{progressMessage}</p>
-        <Loader />
+        <div className="flex flex-col h-[100vh] items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black"></div>
+          <p className="mt-4 text-center text-lg font-medium text-gray-800">{progressMessage}</p>
+        </div>
       </>
     );
+
 
   // if (errorMessage)
   //   return (
@@ -152,7 +158,7 @@ export default function Dashboard() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dashboardData.length !== 0 ?
+          {
             dashboardData?.map((website) => (
               <WebsiteCard
                 key={website.webflowSiteId}
@@ -163,7 +169,7 @@ export default function Dashboard() {
                 products={website.totalProducts}
                 webflowSiteId={website.webflowSiteId}
               />
-            )) : navigate(`/connect-webflow`)}
+            ))}
         </div>
       </div>
     </MainLayout>
