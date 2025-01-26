@@ -128,8 +128,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
 <script defer src="https://search-five-delta.vercel.app/widget.iife.js"></script>
 `;
 
-
-
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">
       {/* Left Section */}
@@ -146,13 +144,12 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                 <div key={item._id}>
                   <input
                     type="checkbox"
-                    id={item._id}
+                    id={item.webflowCollectionId}
                     className="mr-2 accent-black"
                     {...register("searchFrom.collections")}
-                    value={item._id}
+                    value={item.webflowCollectionId}
                     onChange={(e) => {
                       const isChecked = e.target.checked;
-
                       // Get the current values of the fields
                       const currentOrder = getValues("instantSearchWidgetCustomization.searchResultContentOrdering");
                       const currentDefaultOrNoResultOrder = getValues("instantSearchWidgetCustomization.defaultOrNoResultOrdering");
