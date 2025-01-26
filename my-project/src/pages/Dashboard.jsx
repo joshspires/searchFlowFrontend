@@ -36,7 +36,9 @@ export default function Dashboard() {
             "Please be patient. Your data is being processed and it might take a few minutes to complete."
           );
         } else if (data?.status === "completed") {
-          setProgressMessage("Data Loaded Successfully!");
+          setProgressMessage("");
+          toast.success(data.message);
+
           dispatch(setDashboardData(data?.data));
           setLoading(false);
           eventSource.close();
