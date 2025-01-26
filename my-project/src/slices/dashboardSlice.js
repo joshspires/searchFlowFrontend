@@ -7,8 +7,11 @@ const dashboardSlice = createSlice({
         setDashboardData: (state, action) => {
             state.data = action.payload;
         },
+        clearDashboardData: (state, action) => {
+            state.data = null;
+        },
     },
 });
 
-export const { setDashboardData } = dashboardSlice.actions;
+export const { setDashboardData, clearDashboardData } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

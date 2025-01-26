@@ -3,7 +3,7 @@ import MainLayout from "../Layout/MainLayout";
 import WebsiteCard from "../components/WebsiteCard";
 import Loader from "../common/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { setDashboardData } from "../slices/dashboardSlice";
+import { clearDashboardData, setDashboardData } from "../slices/dashboardSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -86,6 +86,7 @@ export default function Dashboard() {
       );
     } finally {
       setLoading(false);
+      dispatch(clearDashboardData())
     }
   };
 
