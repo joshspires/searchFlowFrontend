@@ -4,7 +4,7 @@ import WebsiteCard from "../components/WebsiteCard";
 import Loader from "../common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardData } from "../slices/dashboardSlice";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 export default function Dashboard() {
@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [showAlert, setShowAlert] = useState(false); // State for showing the custom alert
   const dispatch = useDispatch();
   const dashboardData = useSelector((state) => state.dashboard.data);
+  const navigate = useNavigate();
+
 
   const connectToEventSource = (retryCount = 0) => {
     const eventSource = new EventSource(
@@ -26,7 +28,9 @@ export default function Dashboard() {
       try {
         const data = JSON.parse(event?.data);
         toast.dismiss();
-        toast.success(data.message);
+        if (data.message === "Connection Established") {
+          toast.success(data.message);
+        }
         if (data?.status === "in-progress") {
           setProgressMessage(
             "Please be patient. Your data is being processed and it might take a few minutes to complete."
@@ -91,25 +95,25 @@ export default function Dashboard() {
       </>
     );
 
-  if (errorMessage)
-    return (
-      <div className="text-center flex flex-col justify-center items-center h-[100vh] text-red-500">
-        <p>{errorMessage}</p>
-        <button
-          onClick={() => {
-            connectToEventSource();
-          }}
-          className="border rounded-lg border-red-500 mt-2 px-4 py-2"
-        >
-          Retry
-        </button>
-      </div>
-    );
+  // if (errorMessage)
+  //   return (
+  //     <div className="text-center flex flex-col justify-center items-center h-[100vh] text-red-500">
+  //       <p>{errorMessage}</p>
+  //       <button
+  //         onClick={() => {
+  //           connectToEventSource();
+  //         }}
+  //         className="border rounded-lg border-red-500 mt-2 px-4 py-2"
+  //       >
+  //         Retry
+  //       </button>
+  //     </div>
+  //   );
 
   return (
     <MainLayout>
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
+      <div className="">
+        <div className="flex mb-5 items-center justify-between">
           <h2 className="text-2xl font-semibold">Connected Websites</h2>
           <button
             onClick={handleAddNewWebsite}
@@ -120,7 +124,7 @@ export default function Dashboard() {
         </div>
 
         {showAlert && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-[90%] max-w-md space-y-4">
               <h3 className="text-lg font-semibold">Warning</h3>
               <p className="text-gray-700">
@@ -131,13 +135,13 @@ export default function Dashboard() {
                   onClick={() => setShowAlert(false)}
                   className="px-4 py-2 border rounded-md text-gray-700 border-gray-300"
                 >
-                  No
+                  Cancel
                 </button>
                 <button
                   onClick={confirmAddWebsite}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md"
+                  className="px-4 py-2 bg-black text-white rounded-md"
                 >
-                  Yes
+                  Proceed
                 </button>
               </div>
             </div>
@@ -145,17 +149,18 @@ export default function Dashboard() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dashboardData?.map((website) => (
-            <WebsiteCard
-              key={website.webflowSiteId}
-              name={website.websiteName}
-              lastSync={new Date(website.lastSync).toLocaleString()}
-              collections={website.totalCollections}
-              items={website.totalItems}
-              products={website.totalProducts}
-              webflowSiteId={website.webflowSiteId}
-            />
-          ))}
+          {dashboardData.length !== 0 ?
+            dashboardData?.map((website) => (
+              <WebsiteCard
+                key={website.webflowSiteId}
+                name={website.websiteName}
+                lastSync={new Date(website.lastSync).toLocaleString()}
+                collections={website.totalCollections}
+                items={website.totalItems}
+                products={website.totalProducts}
+                webflowSiteId={website.webflowSiteId}
+              />
+            )) : navigate(`/connect-webflow`)}
         </div>
       </div>
     </MainLayout>

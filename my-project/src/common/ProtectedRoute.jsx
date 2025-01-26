@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 const ProtectedRoute = ({ children, adminOnly }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
+  const dashboardData = useSelector((state) => state.dashboard.data);
+
   if (!userInfo) {
     return <Navigate to="/" replace />;
   }
