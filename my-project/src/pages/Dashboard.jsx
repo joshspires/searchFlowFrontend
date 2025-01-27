@@ -80,8 +80,10 @@ export default function Dashboard() {
     setShowAlert(false);
     setLoading(true);
     try {
+      navigate("/connect-webflow")
       const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectNewWebFlowSite?userId=${userId}`;
       window.location.href = url;
+      dispatch(clearDashboardData())
     } catch (error) {
       alert(
         error.response?.data?.message ||
@@ -89,7 +91,6 @@ export default function Dashboard() {
       );
     } finally {
       setLoading(false);
-      dispatch(clearDashboardData())
     }
   };
 
