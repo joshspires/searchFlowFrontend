@@ -19,9 +19,11 @@ import toast from "react-hot-toast";
 const WebsiteSettingsPage = () => {
   const [defaultValues, setDefaultValues] = useState({});
   const [siteData, setSiteData] = useState({});
+  const [siteName, setSiteName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false); // Loading state for fetching preferences
   const { id } = useParams();
+  console.log("siteData", siteData);
 
   const form = useForm({
     defaultValues,
@@ -39,10 +41,10 @@ const WebsiteSettingsPage = () => {
         const siteId = id; // Replace with dynamic site ID
 
         const searchPreferences = await getSearchPreference(userId, siteId);
-        console.log("searchPreferences", searchPreferences);
 
         if (searchPreferences?.data) {
-          setDefaultValues(searchPreferences.data);
+          setDefaultValues(searchPreferences?.data);
+          setSiteName(searchPreferences?.data.siteName);
           reset(searchPreferences.data);
         }
 
@@ -50,6 +52,7 @@ const WebsiteSettingsPage = () => {
         if (siteAndUserData?.data) {
           setSiteData(siteAndUserData.data);
         }
+        console.log("searchPreferences", searchPreferences?.data?.siteName);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -79,7 +82,7 @@ const WebsiteSettingsPage = () => {
     <MainLayout>
       <div>
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl mx-2 mb-2 font-semibold">{"Websites name"}</h2>
+          <h2 className="text-2xl mx-2 mb-3 font-semibold">{!isFetching && siteName}</h2>
         </div>
         {isFetching ? (
           <Loader />
