@@ -18,6 +18,17 @@ const EmailVerification = () => {
   const dispatch = useDispatch();
   // Handle input changes
   const handleChange = (value, index) => {
+    if (/^\d{6}$/.test(value)) {
+      // If the user pastes a 6-digit code, update all inputs at once
+      setCode(value.split(""));
+
+      // Move focus to the last input field
+      setTimeout(() => {
+        document.getElementById(`code-${5}`).focus(); // Last box (index 5)
+      }, 10);
+      return;
+    }
+
     if (/^\d?$/.test(value)) {
       const newCode = [...code];
       newCode[index] = value;
@@ -28,6 +39,34 @@ const EmailVerification = () => {
       }
     }
   };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      if (!code[index] && index > 0) {
+        // Move to the previous input if current is empty
+        document.getElementById(`code-${index - 1}`).focus();
+      }
+      const newCode = [...code];
+      newCode[index] = "";
+      setCode(newCode);
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+    if (/^\d{6}$/.test(pastedData)) {
+      setCode(pastedData.split(""));
+
+      // Move focus to the last input field after pasting
+      setTimeout(() => {
+        document.getElementById(`code-${5}`).focus(); // Last box (index 5)
+      }, 10);
+    }
+  };
+
+
+
 
   // Handle Submit Verification
   const handleSubmit = async () => {
@@ -105,8 +144,13 @@ const EmailVerification = () => {
               value={digit}
               maxLength="1"
               onChange={(e) => handleChange(e.target.value, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              onPaste={handlePaste} // Attach paste handler
               className="w-10 h-10 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
+
+
           ))}
         </div>
 

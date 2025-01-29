@@ -33,100 +33,11 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
     setValue(field, !getValues(field), { shouldDirty: true });
   };
   const codeSnippet = `
-<div id="searchWidget" style="display: none;">
-  <button id="closeButton" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px;">Close</button>
-  <div id="root">
-    <p>Widget loaded for siteId: ${siteId}</p>
-  </div>
-  <a id="viewAllButton" href="#" target="_blank" style="margin-top: 20px; background: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; display: inline-block; text-align: center; text-decoration: none;">View All Results</a>
-</div>
-
-<!-- Static CSS -->
-<link rel="stylesheet" href="https://abrar341.github.io/search/widget.css" />
-
-<script defer>
-  (function () {
-    const userId = "${userId}";
-    const siteId = "${siteId}";
-
-    if (!userId || !siteId) {
-      console.error("userId or siteId not found.");
-      return;
-    }
-
-    const SearchFlowWidget = {
-      init: function (config) {
-        if (!config.siteId || !config.userId) {
-          console.error("SearchFlowWidget: Missing required configuration fields.");
-          return;
-        }
-        console.log("SearchFlowWidget initialized with config:", config);
-        this.loadWidget(config);
-      },
-      loadWidget: function (config) {
-        const rootElement = document.getElementById("root");
-        if (!rootElement) {
-          console.error("Root element not found.");
-          return;
-        }
-        rootElement.innerHTML = \`<p>Widget loaded for siteId: \${config.siteId}</p>\`;
-      },
-    };
-
-    window.SearchFlowWidget = SearchFlowWidget;
-    window.appConfig = { userId, siteId };
-
-    // DOMContentLoaded Event
-    document.addEventListener("DOMContentLoaded", function () {
-      const widget = document.getElementById("searchWidget");
-      const button = document.getElementById("searchWidgetButton");
-      const closeButton = document.getElementById("closeButton");
-      const viewAllButton = document.getElementById("viewAllButton");
-      const searchInput = document.getElementById("searchWidgetInput");
-
-      if (!button) {
-        console.error("SearchWidgetButton not found.");
-        return;
-      }
-
-      // Toggle Widget Display
-      button.addEventListener("click", function () {
-        const event = new Event("widgetOpen");
-        window.dispatchEvent(event);
-      });
-
-      // Close Widget
-      if (closeButton) {
-        closeButton.addEventListener("click", function () {
-          widget.style.display = "none";
-        });
-      }
-
-      // Update View All Button URL
-      if (viewAllButton && searchInput) {
-        searchInput.addEventListener("input", function () {
-          const query = searchInput.value.trim();
-          viewAllButton.href = query
-            ? \`https://searchflow-test---search.webflow.io/search?q=\${encodeURIComponent(query)}\`
-            : "#";
-        });
-
-        viewAllButton.addEventListener("click", function (event) {
-          if (!searchInput.value.trim()) {
-            alert("Please enter a search query.");
-            event.preventDefault();
-          }
-        });
-      } else {
-        console.error("Search input or View All button not found.");
-      }
-    });
-  })();
-</script>
-
-<!-- Static JS -->
-<script defer src="https://search-five-delta.vercel.app/widget.iife.js"></script>
-`;
+<script 
+defer src="https://searchflow-ed703fb051f2.herokuapp.com/widget.js" 
+data-user-id="${userId}" 
+data-site-id="${siteId}">
+</script>`;
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">
@@ -210,6 +121,7 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                           ],
                           { shouldDirty: true }
                         );
+
                         setValue(
                           "searchResultPageCustomization.searchResultContentOrdering",
                           [
@@ -233,7 +145,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                           currentOrder.filter((entry) => entry.id !== item._id),
                           { shouldDirty: true }
                         );
-
                         // Remove collection from `defaultOrNoResultOrdering`
                         setValue(
                           "instantSearchWidgetCustomization.defaultOrNoResultOrdering",
@@ -245,7 +156,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                           currentDNoResultOrder.filter((entry) => entry.id !== item._id),
                           { shouldDirty: true }
                         );
-
                         setValue(
                           "searchResultPageCustomization.searchResultContentOrdering",
                           currentTabOrder.filter((entry) => entry.id !== item._id),
@@ -254,7 +164,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                       }
                     }}
                   />
-
                   <label htmlFor={item._id}>{item.displayName}</label>
                 </div>
               ))}

@@ -88,7 +88,6 @@ const NoResultsLayoutSettings = ({ siteData }) => {
     );
   };
 
-
   const getItems = (column, section) =>
     ordering
       ? ordering
@@ -126,7 +125,6 @@ const NoResultsLayoutSettings = ({ siteData }) => {
       return matchedItem.fieldData?.name || null; // Fallback to null if fieldData.displayName doesn't exist
     } else if (type === "Pages") {
       return matchedItem.title || null;
-
       // Fallback to null if title doesn't exist
     } else if (type === "suggestedTerms") {
       return matchedItem.term || null; // Fallback to null if term doesn't exist
@@ -219,8 +217,6 @@ const NoResultsLayoutSettings = ({ siteData }) => {
             />
             <label htmlFor="searchTerms">Suggested search terms</label>
           </div>
-
-
         </div>
       </div>
 
@@ -298,20 +294,40 @@ const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dat
   return (
     <div ref={(node) => { ref.current = node; drop(node); }} className="p-2">
       <h3 className="font-semibold text-base px-2 mb-2">{formatName(sectionName)}</h3>
-      {items.map((item, index) => (
-        <DraggableItem
-          key={item.id}
-          item={item}
-          index={index}
-          source={{
-            sourceColumn: columnName,
-            sourceSection: sectionName,
-            sourceId: item.id,
-          }}
-          getDisplayName={getDisplayName}
-          dataSources={dataSources}
-        />
-      ))}
+      {columnName === "columnOne" && sectionName === "sectionOne" && items.length > 0 ? (
+        <div className="flex py-1 gap-1 items-center text-sm  px-2">
+          <svg
+            width="14"
+            height="11"
+            viewBox="0 0 11 7"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 1.5C0 0.671573 0.671573 0 1.5 0C2.32843 0 3 0.671573 3 1.5C3 2.32843 2.32843 3 1.5 3C0.671573 3 0 2.32843 0 1.5Z" fill="black" />
+            <path d="M4 1.5C4 0.671573 4.67157 0 5.5 0C6.32843 0 7 0.671573 7 1.5C7 2.32843 6.32843 3 5.5 3C4.67157 3 4 2.32843 4 1.5Z" fill="black" />
+            <path d="M8 1.5C8 0.671573 8.67157 0 9.5 0C10.3284 0 11 0.671573 11 1.5C11 2.32843 10.3284 3 9.5 3C8.67157 3 8 2.32843 8 1.5Z" fill="black" />
+            <path d="M8 5.5C8 4.67157 8.67157 4 9.5 4C10.3284 4 11 4.67157 11 5.5C11 6.32843 10.3284 7 9.5 7C8.67157 7 8 6.32843 8 5.5Z" fill="black" />
+            <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
+            <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
+          </svg>
+          <p className="pb-1">All Products</p>
+        </div>
+      ) : (
+        items.map((item, index) => (
+          <DraggableItem
+            key={item.id}
+            item={item}
+            index={index}
+            source={{
+              sourceColumn: columnName,
+              sourceSection: sectionName,
+              sourceId: item.id,
+            }}
+            getDisplayName={getDisplayName}
+            dataSources={dataSources}
+          />
+        ))
+      )}
     </div>
   );
 };

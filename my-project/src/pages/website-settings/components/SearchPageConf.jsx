@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { useFormContext, useWatch } from "react-hook-form";
-import NoResultsLayoutSettings from "./NoResultWidget";
 
 const ITEM_TYPE = "ITEM";
 
@@ -11,6 +9,7 @@ const layoutOptions = [
   { id: "two-tabs", label: "Two tabs" },
   { id: "three-tabs", label: "Three tabs" },
 ];
+
 const SearchPageConf = ({ siteData }) => {
   const { getValues, setValue, register, control } = useFormContext();
   const ordering = useWatch({ control, name: "searchResultPageCustomization.noResultOrdering" }); // Watch for changes in "ordering"
@@ -276,7 +275,7 @@ const SearchPageConf = ({ siteData }) => {
                     >
                       <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
                       <div className="flex-1 border-t border-black">
-                        <Section
+                        <TabSection
                           key={`${columnName}-${sectionName}`}
                           columnName={columnName}
                           sectionName={sectionName}
@@ -406,8 +405,8 @@ const SearchPageConf = ({ siteData }) => {
     </div>
   );
 };
-const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
 
+const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
   const ref = useRef();
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
@@ -429,20 +428,125 @@ const Section = ({ columnName, sectionName, items, moveItem, getDisplayName, dat
   return (
     <div ref={(node) => { ref.current = node; drop(node); }} className="p-2">
       <h3 className="font-semibold text-base px-2 mb-2">{formatName(sectionName)}</h3>
-      {items.map((item, index) => (
-        <DraggableItem
-          key={item.id}
-          item={item}
-          index={index}
-          source={{
-            sourceColumn: columnName,
-            sourceSection: sectionName,
-            sourceId: item.id,
-          }}
-          getDisplayName={getDisplayName}
-          dataSources={dataSources}
-        />
-      ))}
+      {columnName === "columnTwo" && sectionName === "sectionOne" && items.length > 0 ? (
+        <div className="flex py-1 gap-1 items-center text-sm  px-2">
+          <svg
+            width="14"
+            height="11"
+            viewBox="0 0 11 7"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 1.5C0 0.671573 0.671573 0 1.5 0C2.32843 0 3 0.671573 3 1.5C3 2.32843 2.32843 3 1.5 3C0.671573 3 0 2.32843 0 1.5Z" fill="black" />
+            <path d="M4 1.5C4 0.671573 4.67157 0 5.5 0C6.32843 0 7 0.671573 7 1.5C7 2.32843 6.32843 3 5.5 3C4.67157 3 4 2.32843 4 1.5Z" fill="black" />
+            <path d="M8 1.5C8 0.671573 8.67157 0 9.5 0C10.3284 0 11 0.671573 11 1.5C11 2.32843 10.3284 3 9.5 3C8.67157 3 8 2.32843 8 1.5Z" fill="black" />
+            <path d="M8 5.5C8 4.67157 8.67157 4 9.5 4C10.3284 4 11 4.67157 11 5.5C11 6.32843 10.3284 7 9.5 7C8.67157 7 8 6.32843 8 5.5Z" fill="black" />
+            <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
+            <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
+          </svg>
+          <p className="pb-1">All Products</p>
+        </div>
+      ) : (
+        items.map((item, index) => (
+          <DraggableItem
+            key={item.id}
+            item={item}
+            index={index}
+            source={{
+              sourceColumn: columnName,
+              sourceSection: sectionName,
+              sourceId: item.id,
+            }}
+            getDisplayName={getDisplayName}
+            dataSources={dataSources}
+          />
+        ))
+      )}
+    </div>
+  );
+};
+
+const TabSection = ({ columnName, sectionName, items, moveItem, getDisplayName, dataSources }) => {
+  const ref = useRef();
+  const [, drop] = useDrop({
+    accept: ITEM_TYPE,
+    drop: (item, monitor) => {
+      const offset = monitor.getClientOffset();
+      const boundingRect = ref.current.getBoundingClientRect();
+      const y = offset.y - boundingRect.top;
+
+      const destination = {
+        destColumn: columnName,
+        destSection: sectionName,
+        destIndex: Math.min(Math.max(0, Math.floor(y / 50)), items.length),
+      };
+
+      moveItem(item.source, destination);
+    },
+  });
+
+  return (
+    <div ref={(node) => { ref.current = node; drop(node); }} className="p-2">
+      <h3 className="font-semibold text-base px-2 mb-2">{formatName(sectionName)}</h3>
+
+      {/* Show "All Products" or "All Pages" without listing items */}
+      {(columnName === "Products" && items.length > 0) && (
+        <>
+          <div className="flex py-1 gap-1 items-center text-sm  px-2">
+            <svg
+              width="14"
+              height="11"
+              viewBox="0 0 11 7"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 1.5C0 0.671573 0.671573 0 1.5 0C2.32843 0 3 0.671573 3 1.5C3 2.32843 2.32843 3 1.5 3C0.671573 3 0 2.32843 0 1.5Z" fill="black" />
+              <path d="M4 1.5C4 0.671573 4.67157 0 5.5 0C6.32843 0 7 0.671573 7 1.5C7 2.32843 6.32843 3 5.5 3C4.67157 3 4 2.32843 4 1.5Z" fill="black" />
+              <path d="M8 1.5C8 0.671573 8.67157 0 9.5 0C10.3284 0 11 0.671573 11 1.5C11 2.32843 10.3284 3 9.5 3C8.67157 3 8 2.32843 8 1.5Z" fill="black" />
+              <path d="M8 5.5C8 4.67157 8.67157 4 9.5 4C10.3284 4 11 4.67157 11 5.5C11 6.32843 10.3284 7 9.5 7C8.67157 7 8 6.32843 8 5.5Z" fill="black" />
+              <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
+              <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
+            </svg>
+            <p className="pb-1">All Products</p>
+          </div>
+        </>
+      )}
+      {(columnName === "Pages" && items.length > 0) && (
+        <div className="flex py-1 gap-1 items-center text-sm px-2">
+          <svg
+            width="14"
+            height="11"
+            viewBox="0 0 11 7"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M0 1.5C0 0.671573 0.671573 0 1.5 0C2.32843 0 3 0.671573 3 1.5C3 2.32843 2.32843 3 1.5 3C0.671573 3 0 2.32843 0 1.5Z" fill="black" />
+            <path d="M4 1.5C4 0.671573 4.67157 0 5.5 0C6.32843 0 7 0.671573 7 1.5C7 2.32843 6.32843 3 5.5 3C4.67157 3 4 2.32843 4 1.5Z" fill="black" />
+            <path d="M8 1.5C8 0.671573 8.67157 0 9.5 0C10.3284 0 11 0.671573 11 1.5C11 2.32843 10.3284 3 9.5 3C8.67157 3 8 2.32843 8 1.5Z" fill="black" />
+            <path d="M8 5.5C8 4.67157 8.67157 4 9.5 4C10.3284 4 11 4.67157 11 5.5C11 6.32843 10.3284 7 9.5 7C8.67157 7 8 6.32843 8 5.5Z" fill="black" />
+            <path d="M4 5.5C4 4.67157 4.67157 4 5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5Z" fill="black" />
+            <path d="M0 5.5C0 4.67157 0.671573 4 1.5 4C2.32843 4 3 4.67157 3 5.5C3 6.32843 2.32843 7 1.5 7C0.671573 7 0 6.32843 0 5.5Z" fill="black" />
+          </svg>
+          <p className="pb-1">All Pages</p>
+        </div>
+      )}
+
+      {/* Only list items for the Collections section */}
+      {columnName === "Collections" &&
+        items.map((item, index) => (
+          <DraggableItem
+            key={item.id}
+            item={item}
+            index={index}
+            source={{
+              sourceColumn: columnName,
+              sourceSection: sectionName,
+              sourceId: item.id,
+            }}
+            getDisplayName={getDisplayName}
+            dataSources={dataSources}
+          />
+        ))}
     </div>
   );
 };
