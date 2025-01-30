@@ -30,20 +30,19 @@ export default function Sidebar() {
 
 
   ];
-
   const bottomMenuItems = [
     {
       text: "Documentation",
       path: "/documentation",
       onClick: () => {
-        window.location.href = "https://www.searchflow.app/docs"; // Force reload and redirect
+        window.location.href = "/docs"; // Force reload and redirect
       }
     },
     {
       text: "Support",
       path: "/support",
       onClick: () => {
-        window.location.href = "https://www.searchflow.app/support "; // Force reload and redirect
+        window.location.href = "/support "; // Force reload and redirect
       }
     },
 
