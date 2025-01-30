@@ -17,6 +17,9 @@ import AdminSettingsPage from "./pages/AdminSettingsPage";
 import { Toaster } from "react-hot-toast";
 import SearchFlowDocumentation from "./pages/SearchFlowDocumentation";
 import SearchFlowSupport from "./pages/SearchFlowSupport";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { startAutoLogout } from "./slices/autoLogout";
 
 const adminRoutes = [
   { path: "/dashboard", element: <Dashboard /> },
@@ -34,8 +37,19 @@ const adminRoutes = [
 ];
 
 export default function App() {
+
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.auth.userInfo);
+
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(startAutoLogout()); // Start timer when user is logged in
+    }
+  }, [dispatch, userInfo]);
+
   return (
     <Router>
+
       <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Login />} />
