@@ -35,12 +35,16 @@ export default function Sidebar() {
     {
       text: "Documentation",
       path: "/documentation",
-      onClick: () => navigate("/documentation"),
+      onClick: () => {
+        window.location.href = "https://www.searchflow.app/docs"; // Force reload and redirect
+      }
     },
     {
       text: "Support",
       path: "/support",
-      onClick: () => navigate("/support"),
+      onClick: () => {
+        window.location.href = "https://www.searchflow.app/support "; // Force reload and redirect
+      }
     },
 
     {
