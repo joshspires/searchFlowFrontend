@@ -16,6 +16,7 @@ export default function AccountSetting() {
   } = useForm();
   const { userInfo } = useSelector((state) => state.auth);
   const email = userInfo?.data.email;
+  const userName = userInfo?.data.username;
   const userId = userInfo?.data.userId;
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = React.useState(false);
@@ -27,7 +28,10 @@ export default function AccountSetting() {
     if (email) {
       setValue("email", email);
     }
-  }, [email, setValue]);
+    if (userName) {
+      setValue("firstName", userName);
+    }
+  }, [email, userName, setValue]);
 
   const watchedFields = watch(["firstName", "email", "newPassword", "confirmPassword"]);
 
@@ -40,7 +44,7 @@ export default function AccountSetting() {
   const onSubmit = async (data) => {
     const formattedData = {};
     if (data.firstName) {
-      formattedData.userName = `${data.firstName} ${data.lastName || ""}`.trim();
+      formattedData.userName = `${data.firstName}`.trim();
     }
     if (data.email && data.email !== email) {
       formattedData.email = data.email;
@@ -66,6 +70,7 @@ export default function AccountSetting() {
           ...response,
           data: {
             ...response.data,
+            username: response.data.userName,
             userId: response.data._id, // Add userId alongside _id
             webflowAccessToken: userInfo?.data.webflowAccessToken,
             token: userInfo?.data.token
@@ -83,7 +88,7 @@ export default function AccountSetting() {
 
       // Reset the form to default or updated values
       reset({
-        firstName: "",
+        firstName: response?.data?.username || userName,
         email: response?.data.email || email,
         newPassword: "",
         confirmPassword: "",
@@ -111,6 +116,7 @@ export default function AccountSetting() {
             <input
               type="text"
               id="firstName"
+              defaultValue={userName} // Set the default value
               {...register("firstName")}
               className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
             />
