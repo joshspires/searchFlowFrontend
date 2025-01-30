@@ -149,8 +149,6 @@ const EmailVerification = () => {
               className="w-10 h-10 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-
-
           ))}
         </div>
 
