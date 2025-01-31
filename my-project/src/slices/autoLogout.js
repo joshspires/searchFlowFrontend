@@ -10,9 +10,9 @@ export const startAutoLogout = () => (dispatch) => {
     if (loginTime) {
         const currentTime = Date.now();
         const elapsedTime = currentTime - parseInt(loginTime, 10);
-        // const remainingTime = 4 * 60 * 60 * 1000 - elapsedTime; // Change to 4 hours
+        const remainingTime = 4 * 60 * 60 * 1000 - elapsedTime; // Change to 4 hours
         // const remainingTime = 15000 - elapsedTime; // Change to 5 seconds
-        const remainingTime = 3 * 60 * 1000 - elapsedTime; // Change to 3 minutes
+        // const remainingTime = 3 * 60 * 1000 - elapsedTime; // Change to 3 minutes
 
         if (remainingTime <= 0) {
             dispatch(logout()); // Logout immediately if time is up
