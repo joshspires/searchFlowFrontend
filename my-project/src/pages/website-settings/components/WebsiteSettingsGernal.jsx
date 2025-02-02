@@ -32,12 +32,14 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
   const handleToggleChange = (field) => {
     setValue(field, !getValues(field), { shouldDirty: true });
   };
-  const codeSnippet = `
-<script 
-defer src="https://searchflow-ed703fb051f2.herokuapp.com/widget.js" 
-data-user-id="${userId}" 
-data-site-id="${siteId}">
-</script>`;
+  //   const codeSnippet = `
+  // <script 
+  // defer src="https://searchflow-ed703fb051f2.herokuapp.com/widget.js" 
+  // data-user-id="${userId}" 
+  // data-site-id="${siteId}">
+  // </script>`;
+
+  const codeSnippet = `<script defer src="https://searchflow-ed703fb051f2.herokuapp.com/widget.js" data-user-id="${userId}" data-site-id="${siteId}"></script>`;
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">
