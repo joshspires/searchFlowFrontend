@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   const connectToEventSource = (retryCount = 0) => {
     const eventSource = new EventSource(
-      `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/getDashboardData/${userId}`
+      `https://dash.searchflow.app/api/webFlowManagementRoutes/getDashboardData/${userId}`
     );
 
     eventSource.onmessage = (event) => {
@@ -81,7 +81,7 @@ export default function Dashboard() {
     setLoading(true);
     try {
       navigate("/connect-webflow")
-      const url = `https://searchflow-ed703fb051f2.herokuapp.com/api/webFlowManagementRoutes/connectNewWebFlowSite?userId=${userId}`;
+      const url = `https://dash.searchflow.app/api/webFlowManagementRoutes/connectNewWebFlowSite?userId=${userId}`;
       window.location.href = url;
       dispatch(clearDashboardData())
     } catch (error) {
