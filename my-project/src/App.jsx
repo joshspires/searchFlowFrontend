@@ -30,8 +30,8 @@ const adminRoutes = [
   },
   { path: "/settings", element: <Setting /> },
   { path: "/connect-webflow", element: <ConnectWebflow /> },
-  { path: "/docs", element: <SearchFlowDocumentation /> },
-  { path: "/support", element: <SearchFlowSupport /> },
+  // { path: "/docs", element: <SearchFlowDocumentation /> },
+  // { path: "/support", element: <SearchFlowSupport /> },
   // { path: "/support", element: <ConnectWebflow /> },
   { path: "/admin-dashboard", element: <AdminSettingsPage />, adminOnly: true },
 ];
