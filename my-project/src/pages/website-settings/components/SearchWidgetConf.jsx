@@ -137,35 +137,6 @@ const SearchWidgetConf = ({ siteData }) => {
       <div className="flex-1">
         <h2 className="text-lg font-semibold mb-4">Instant Search Widget</h2>
         <div className="space-y-6">
-          <div className="">
-            <h3 className="text-md font-medium mb-2">Search Results Layout</h3>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="oneColumn"
-                  className="mr-2 text-sm accent-black"
-                  checked={searchResultLayout === "one-column"}
-                  onChange={() => handleLayoutChange("one-column")}
-                />
-                <label htmlFor="oneColumn" className="text-sm">
-                  One-column
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="twoColumn"
-                  className="mr-2 text-sm accent-black"
-                  checked={searchResultLayout === "two-column"}
-                  onChange={() => handleLayoutChange("two-column")}
-                />
-                <label htmlFor="twoColumn" className="text-sm">
-                  Two-column
-                </label>
-              </div>
-            </div>
-          </div>
           <div className="flex gap-4 mt-5  mx-auto border-black rounded-xl">
             {["columnOne", "columnTwo"].map((columnName) => (
               <div key={columnName} className="flex flex-col w-full">

@@ -221,28 +221,6 @@ const SearchPageConf = ({ siteData }) => {
       {/* left section */}
       <div className="w-full">
         <h2 className="text-lg font-bold mb-4">Search results page</h2>
-        <div className="mx-2">
-          <h3 className="text-base font-semibold mb-2">Search results layout</h3>
-          {/* check Box section  */}
-          <div className="space-y-1">
-            {layoutOptions.map(({ id, label }) => (
-              <div key={id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id={id}
-                  checked={searchResultLayout === id || false}  // Ensure it's always boolean
-                  onChange={() => handleLayoutChange(id)}
-                  className="cursor-pointer accent-black"
-                />
-
-                <label htmlFor={id} className="text-sm cursor-pointer">
-                  {label}
-                </label>
-              </div>
-            ))}
-          </div>
-
-        </div>
         <div className="space-y-6 mx-2 mt-2">
           <div>
             <h3 className="text-md font-medium mb-2">Search results content ordering</h3>
