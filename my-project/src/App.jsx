@@ -15,8 +15,6 @@ import ProtectedRoute from "./common/ProtectedRoute";
 import WebsiteSettingsPage from "./pages/website-settings/WebsiteSettingsPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
 import { Toaster } from "react-hot-toast";
-import SearchFlowDocumentation from "./pages/SearchFlowDocumentation";
-import SearchFlowSupport from "./pages/SearchFlowSupport";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { startAutoLogout } from "./slices/autoLogout";
@@ -30,9 +28,6 @@ const adminRoutes = [
   },
   { path: "/settings", element: <Setting /> },
   { path: "/connect-webflow", element: <ConnectWebflow /> },
-  // { path: "/docs", element: <SearchFlowDocumentation /> },
-  // { path: "/support", element: <SearchFlowSupport /> },
-  // { path: "/support", element: <ConnectWebflow /> },
   { path: "/admin-dashboard", element: <AdminSettingsPage />, adminOnly: true },
 ];
 
