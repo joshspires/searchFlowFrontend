@@ -120,7 +120,7 @@ const EmailVerification = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="p-6 bg-white shadow-md rounded-lg w-full max-w-sm">
+      <div className="p-6 bg-white shadow-md rounded w-full max-w-sm">
         <h1 className="text-center text-xl font-bold text-black-500 mb-4">
           Verify Your Email
         </h1>
@@ -146,7 +146,7 @@ const EmailVerification = () => {
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste} // Attach paste handler
-              className="w-10 h-10 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-10 h-10 text-center border border-secondary rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
           ))}
@@ -154,7 +154,7 @@ const EmailVerification = () => {
 
         <button
           onClick={handleSubmit}
-          className={`w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+          className={`w-full bg-primary text-white py-2 rounded bg-secondary transition duration-300 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           disabled={isLoading}
         >
@@ -163,7 +163,7 @@ const EmailVerification = () => {
 
         <button
           onClick={handleResend}
-          className="w-full mt-4 py-2 rounded border hover:bg-black-100 text-blue-500"
+          className="w-full mt-4 py-2 rounded border hover:bg-primary-100 text-blue-500"
         >
           {
             resendisLoading ? "Resending Email..." : "Resend Verification Email"

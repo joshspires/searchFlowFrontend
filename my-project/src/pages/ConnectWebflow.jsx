@@ -35,7 +35,7 @@ function ConnectWebflow() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md text-center">
+      <div className="bg-white shadow-lg rounded p-8 w-full max-w-md text-center">
         <h3 className="text-3xl font-bold text-gray-900 mb-4">
           Connect to Webflow
         </h3>
@@ -43,7 +43,7 @@ function ConnectWebflow() {
           Seamlessly integrate your Webflow account to unlock advanced features.
         </p>
         <button
-          className="bg-black text-white py-3 px-8 rounded-lg hover:bg-gray-800 transition duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+          className="bg-primary text-white py-3 px-8 rounded bg-secondary transition duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
           onClick={handleConnectWebflow}
         >
           Connect Your Webflow Account

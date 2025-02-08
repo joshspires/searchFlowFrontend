@@ -5,7 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        bitter: ['"Bitter", sans-serif']
+      },
+      colors: {
+        primary: "#162267",
+        secondary: "#0b1134",
+      }
+    },
   },
   plugins: [],
 }

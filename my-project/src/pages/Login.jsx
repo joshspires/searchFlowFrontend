@@ -113,19 +113,19 @@ export default function Login() {
   };
 
   return (
-    <div className="flex border items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-96 px-5 py-8 bg-white border border-black rounded-lg ">
+    <div className="flex items-center justify-center min-h-screen bg-[linear-gradient(142deg,#000,#0e1642)] bg-[#000]">
+      <div className="w-96 px-5 py-8 bg-white rounded">
         {errors.apiError && (
           <p className="text-red-500 text-center mb-4">{errors.apiError}</p>
         )}
-        <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
+        <h1 className="text-3xl font-bold text-center mb-2 text-primary font-bitter">
           searchFlow
-        </h2>
+        </h1>
         <p className="text-sm text-center text-gray-600 mb-6">
           Don't have an account?{" "}
           <span
             onClick={() => navigate("/signup")}
-            className="text-blue-500 hover:underline cursor-pointer"
+            className="text-primary hover:text-blue-700 cursor-pointer"
           >
             Create one now.
           </span>
@@ -140,7 +140,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none"
+            className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded focus:outline-none"
             placeholder="Enter your email"
           />
           {errors.email && (
@@ -158,7 +158,7 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none"
+              className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded focus:outline-none"
               placeholder="Enter your password"
             />
             <button
@@ -178,7 +178,7 @@ export default function Login() {
 
         <div className="text-right mb-6">
           <button
-            className="text-sm text-blue-500 hover:underline"
+            className="text-sm text-primary hover:text-blue-700"
             onClick={() => setIsModalOpen(true)}
           >
             Forgot password? Reset it now.
@@ -188,15 +188,15 @@ export default function Login() {
         <button
           onClick={submitHandler}
           type="submit"
-          className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300"
+          className="w-full bg-primary text-white py-2 rounded hover:bg-secondary transition duration-300"
         >
           {isLoginLoading ? "Logging in..." : "Login"}
         </button>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg  w-full max-w-sm">
+        <div className="fixed inset-0 bg-primary bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded  w-full max-w-sm">
             <h2 className="text-lg font-bold mb-4">Forgot Password</h2>
             <label className="block text-gray-700 font-medium mb-1">
               Enter your email:
@@ -226,7 +226,7 @@ export default function Login() {
               </button>
               <button
                 onClick={handleForgotPassword}
-                className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 ${isForgotLoading ? "opacity-50 cursor-not-allowed" : ""
+                className={`bg-primary text-white px-4 py-2 rounded bg-secondary ${isForgotLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 disabled={isForgotLoading}
               >

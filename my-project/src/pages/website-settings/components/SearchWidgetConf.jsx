@@ -133,15 +133,15 @@ const SearchWidgetConf = ({ siteData }) => {
   }
 
   return (
-    <div className="flex mb-4 flex-col md:flex-row gap-6 border border-black rounded-xl p-6 mx-2">
+    <div className="flex mb-4 flex-col md:flex-row gap-6 border border-secondary rounded p-6 mx-2">
       <div className="flex-1">
         <h2 className="text-lg font-semibold mb-4">Instant Search Widget</h2>
         <div className="space-y-6">
-          <div className="flex gap-4 mt-5  mx-auto border-black rounded-xl">
+          <div className="flex gap-4 mt-5  mx-auto border-secondary rounded-xl">
             {["columnOne", "columnTwo"].map((columnName) => (
               <div key={columnName} className="flex flex-col w-full">
                 <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
-                <div className="flex-1 border rounded-xl border-black">
+                <div className="flex-1 border rounded-xl border-secondary">
                   {["sectionOne", "sectionTwo"]
                     .filter((sectionName) => columnName === "columnTwo" || sectionName === "sectionOne")
                     .map((sectionName) => (

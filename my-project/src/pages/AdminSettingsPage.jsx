@@ -121,7 +121,7 @@ const AdminSettingsPage = () => {
                             {users.map((user) => (
                                 <div
                                     key={user.id}
-                                    className="border p-4  border border-black rounded-xl "
+                                    className="border p-4  border border-secondary rounded-xl "
                                 >
                                     <div className="flex flex-col lg:flex-row justify-between items-center">
                                         <h3 className="font-semibold text-lg">{user.email}</h3>
@@ -137,9 +137,9 @@ const AdminSettingsPage = () => {
                                     </div>
                                     <div className="mt-2 space-y-2">
                                         <button
-                                            className={`w-full px-3 py-2 flex justify-center items-center text-sm font-medium rounded-lg ${user.softDelete
+                                            className={`w-full px-3 py-2 flex justify-center items-center text-sm font-medium rounded ${user.softDelete
                                                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                : 'bg-gray-100 text-gray-700 bg-secondary'
                                                 }`}
                                             onClick={() => handleSoftDelete(user.id, user.softDelete)}
                                             disabled={deleteLoading[user.id]} // Disable button while loading
@@ -173,9 +173,9 @@ const AdminSettingsPage = () => {
                                         </button>
 
                                         <button
-                                            className={`w-full flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg ${user.status === 'Active'
+                                            className={`w-full flex justify-center items-center px-3 py-2 text-sm font-medium rounded ${user.status === 'Active'
                                                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                : 'bg-gray-100 text-gray-700 bg-secondary'
                                                 }`}
                                             onClick={() => handleStatusToggle(user.id, user.status)}
                                             disabled={statusLoading[user.id]} // Disable button while loading

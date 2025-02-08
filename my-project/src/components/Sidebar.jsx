@@ -8,6 +8,7 @@ export default function Sidebar() {
   const location = useLocation(); // Get the current location
   const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
   const userRole = useSelector((state) => state.auth.userInfo?.data?.userRole); // Fetch the user role
+  const appVersion = __APP_VERSION__;
 
   // Define menu items conditionally
   const menuItems = [
@@ -60,10 +61,11 @@ export default function Sidebar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex flex-col h-screen w-[18%] bg-white border-r border-gray-300">
+    <div className="flex flex-col h-screen w-[18%] bg-white border-r border-secondary">
       {/* Header */}
-      <div className="py-6 text-center text-2xl font-bold text-black border-b border-gray-300">
-        searchFlow
+      <div className="py-6 border-b border-secondary">
+        <div className="text-2xl font-bold text-center text-primary font-bitter">searchFlow</div>
+        <div className="text-xs text-center text-gray-500">version {appVersion}</div>
       </div>
 
       {/* Top Menu Items */}

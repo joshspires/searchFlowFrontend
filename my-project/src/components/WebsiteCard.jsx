@@ -10,12 +10,12 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
   };
 
   return (
-    <div className="flex border border-black flex-col p-4 w-full bg-white rounded-xl w-[339px]">
+    <div className="flex border border-secondary flex-col p-4 w-full bg-white rounded w-[339px]">
       <div className="flex justify-between items-center mb-4">
         {/* Card Header */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
-          <p className="text-sm text-gray-500 mt-1">Last sync: {lastSync}</p>
+          <h3 className="text-lg font-semibold text-primary font-bitter">{name}</h3>
+          <p className="text-sm text-gray-500 mt-1">Connected since {lastSync}</p>
         </div>
         <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded-full">
           Active
@@ -23,7 +23,7 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
       </div>
 
       {/* Stats Section */}
-      <div className="flex flex-col gap-3 border border-black rounded-xl p-3 mb-2 ">
+      <div className="flex flex-col gap-3 border border-secondary rounded p-3 mb-2 ">
         <div className="flex justify-between text-gray-700">
           <span className="text-sm">Total collections:</span>
           <span className="font-medium">{collections}</span>
@@ -40,7 +40,7 @@ export default function WebsiteCard({ webflowSiteId, name, lastSync, collections
 
       {/* Button */}
 
-      <button onClick={handleNavigate} className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md self-end">
+      <button onClick={handleNavigate} className="px-4 py-2 text-white bg-primary hover:bg-secondary rounded font-semibold self-end">
         Settings
       </button>
     </div>

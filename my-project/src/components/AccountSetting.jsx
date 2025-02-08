@@ -103,10 +103,10 @@ export default function AccountSetting() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex border border-black rounded-lg flex-col items-start p-6 mt-4 w-full bg-white"
+      className="flex border border-secondary rounded flex-col items-start p-6 mt-5 w-full bg-white"
     >
       <div className="w-full">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Account Details</h2>
+        <h2 className="text-lg font-semibold text-primary font-bitter mb-4">Account Details</h2>
         <div className="grid grid-cols-1 gap-2 md:gap-4 sm:grid-cols-2">
           {/* First Name */}
           <div className="flex flex-col">
@@ -118,7 +118,7 @@ export default function AccountSetting() {
               id="firstName"
               defaultValue={userName} // Set the default value
               {...register("firstName")}
-              className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+              className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded outline-none"
             />
           </div>
 
@@ -137,7 +137,7 @@ export default function AccountSetting() {
                   message: "Invalid email address",
                 },
               })}
-              className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+              className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded outline-none"
             />
             {errors.email && (
               <span className="text-red-500 text-sm mt-1">{errors.email.message}</span>
@@ -159,7 +159,7 @@ export default function AccountSetting() {
                     message: "Password must be at least 6 characters",
                   },
                 })}
-                className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+                className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded outline-none"
               />
               <button
                 type="button"
@@ -190,7 +190,7 @@ export default function AccountSetting() {
                   validate: (value) =>
                     value === watch("newPassword") || "Passwords do not match",
                 })}
-                className="w-full px-4 py-3 text-gray-700 bg-white border border-black rounded outline-none"
+                className="w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded outline-none"
               />
               <button
                 type="button"
@@ -211,7 +211,7 @@ export default function AccountSetting() {
             type="submit"
             className={`mt-4 px-6 py-2 w-[150px] flex justify-center items-center text-white font-medium rounded focus:outline-none focus:ring-2 ${isLoading || !hasChanges
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gray-800 hover:bg-black focus:ring-blue-400"
+              : "bg-gray-800 hover:bg-primary focus:ring-blue-400"
               }`}
             disabled={isLoading || !hasChanges}
           >

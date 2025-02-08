@@ -135,10 +135,10 @@ const NoResultsLayoutSettings = ({ siteData }) => {
   return (
     <div className="w-full space-y-6">
       {/* Layout Configuration */}
-      <div className="rounded-lg">
+      <div className="rounded">
         <h2 className="text-lg font-semibold mb-4">Default/No Results Layout</h2>
         <div className="space-y-2 text-sm">
-          <div>
+         {/* <div>
             <input
               type="checkbox"
               id="twoColumn"
@@ -157,7 +157,7 @@ const NoResultsLayoutSettings = ({ siteData }) => {
               className="mr-2 accent-black"
             />
             <label htmlFor="oneColumn">One-column</label>
-          </div>
+          </div>*/}
           <div>
             <input
               type="checkbox"
@@ -239,11 +239,11 @@ const NoResultsLayoutSettings = ({ siteData }) => {
       </div>
 
       {/* Columns Preview */}
-      <div className="flex gap-4 mt-5 mx-auto border-black rounded-lg">
+      <div className="flex gap-4 mt-5 mx-auto border-secondary rounded">
         {["columnOne", "columnTwo"].map((columnName) => (
           <div key={columnName} className="flex flex-col w-full">
             <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
-            <div className="flex-1 border rounded-lg border-black">
+            <div className="flex-1 border rounded border-secondary">
               {["suggestedTerms", "sectionOne"].map((sectionName) => {
                 // Conditionally render sections based on the column
                 if (

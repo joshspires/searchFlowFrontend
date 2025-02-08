@@ -82,7 +82,7 @@ const WebsiteSettingsPage = () => {
     <MainLayout>
       <div>
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl mx-2 mb-3 font-semibold">{!isFetching && siteName}</h2>
+          <h2 className="text-2xl font-bitter font-bold text-primary mb-3">{!isFetching && siteName}</h2>
         </div>
         {isFetching ? (
           <Loader />
@@ -100,7 +100,7 @@ const WebsiteSettingsPage = () => {
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
-          className="px-4 rounded-lg h-8 w-16 py-1 bg-black text-white flex items-center justify-center"
+          className="px-4 py-2 text-white bg-primary hover:bg-secondary rounded font-semibold self-end"
         >
           {isLoading ? (
             <svg

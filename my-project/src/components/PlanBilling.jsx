@@ -9,14 +9,14 @@ const planFeatures = [
 
 export default function PlanBilling() {
   return (
-    <div className="flex flex-col py-10 px-6 mt-8  border border-black rounded-xl ">
+    <div className="flex flex-col py-10 px-6 mt-8  border border-secondary rounded ">
       {/* Section Title */}
-      <h2 className="text-2xl text-black mb-5 font-semibold">Plans & Billing</h2>
+      <h2 className="text-lg font-semibold text-primary font-bitter mb-5">Plans & Billing</h2>
 
       {/* Plan Card */}
-      <div className=" w-full max-w-sm self-center md:self-start p-6 border border-black bg-white rounded-lg">
+      <div className=" w-full max-w-sm self-center md:self-start p-6 border border-secondary bg-white rounded">
         <div className="text-sm text-black mb-2">Early Access</div>
-        <div className="text-3xl font-bold text-gray-800 mb-6">Free</div>
+        <div className="text-3xl font-bitter font-semibold text-primary mb-6">Free</div>
 
         {/* Plan Features */}
         <ul className="space-y-3 mb-8">
@@ -31,7 +31,7 @@ export default function PlanBilling() {
         {/* Button */}
         <button
           id="currentPlanButton"
-          className="w-full py-3 text-sm font-semibold text-white bg-black rounded-md hover:bg-black transition duration-200"
+          className="w-full py-3 text-sm font-semibold text-white bg-primary hover:bg-secondary rounded transition duration-200"
         >
           Current Plan
         </button>
@@ -41,4 +41,4 @@ export default function PlanBilling() {
 }
 
 
-// <div className="w-full max-w-sm p-6 border border-black bg-white rounded-lg">
+// <div className="w-full max-w-sm p-6 border border-secondary bg-white rounded">

@@ -43,7 +43,7 @@ export default function Signup() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-96 px-5 py-10 bg-white border border-black  rounded-lg">
+      <div className="w-96 px-5 py-10 bg-white border border-secondary  rounded">
         {/* Error Alert */}
         {error.apiError && (
           <div className="bg-red-100 text-red-700 border border-red-400 p-2 rounded mb-4">
@@ -70,8 +70,8 @@ export default function Signup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            className={`w-full border ${error.email ? "border-red-500" : "border-black"
-              } w-full px-4 py-3 text-gray-700 bg-white border border-black rounded rounded px-3 py-2 focus:outline-none `}
+            className={`w-full border ${error.email ? "border-red-500" : "border-secondary"
+              } w-full px-4 py-3 text-gray-700 bg-white border border-secondary rounded rounded px-3 py-2 focus:outline-none `}
             placeholder="Enter your email"
           />
           {error.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
@@ -88,8 +88,8 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
-              className={`w-full border ${error.password ? "border-red-500" : "border-black"
-                } px-4 py-3 text-gray-700 bg-white border border-black rounded focus:outline-none rounded px-3 py-2`}
+              className={`w-full border ${error.password ? "border-red-500" : "border-secondary"
+                } px-4 py-3 text-gray-700 bg-white border border-secondary rounded focus:outline-none rounded px-3 py-2`}
               placeholder="Enter your password"
             />
             <button
@@ -111,7 +111,7 @@ export default function Signup() {
         <button
           onClick={submitHandler}
           type="submit"
-          className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300"
+          className="w-full bg-primary text-white py-2 rounded bg-secondary transition duration-300"
           disabled={isLoading}
         >
           {isLoading ? "Loading..." : "Signup"}

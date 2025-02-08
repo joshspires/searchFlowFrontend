@@ -217,16 +217,16 @@ const SearchPageConf = ({ siteData }) => {
 
 
   return (
-    <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-black justify-between rounded-xl m-2">
+    <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-secondary justify-between rounded-xl m-2">
       {/* left section */}
       <div className="w-full">
         <h2 className="text-lg font-bold mb-4">Search results page</h2>
         <div className="space-y-6 mx-2 mt-2">
           <div>
             <h3 className="text-md font-medium mb-2">Search results content ordering</h3>
-            <div className="flex flex-col mt-5 w-full mx-auto border-black rounded-xl">
+            <div className="flex flex-col mt-5 w-full mx-auto border-secondary rounded-xl">
               {/* Tabs Section */}
-              <div className="flex flex-col md:flex-row gap-1 md:gap-0 text-center  justify-between border-gray-300">
+              <div className="flex flex-col md:flex-row gap-1 md:gap-0 text-center  justify-between border-secondary">
                 {["tabOne", "tabTwo", "tabThree"].map((tabNo) => (
                   <div
                     key={tabNo}
@@ -238,7 +238,7 @@ const SearchPageConf = ({ siteData }) => {
               </div>
 
               {/* Main Content Section */}
-              <div className="flex flex-wrap md:flex-nowrap w-full border rounded-xl border-black">
+              <div className="flex flex-wrap md:flex-nowrap w-full border rounded-xl border-secondary">
                 {/* if we have to drag and drop full system then 
                 {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => { */}
                 {/* else for ordering change */}
@@ -249,10 +249,10 @@ const SearchPageConf = ({ siteData }) => {
                   return (
                     <div
                       key={columnName}
-                      className={`flex  flex-col w-full ${index !== 2 ? "md:border-r border-black" : ""}`}
+                      className={`flex  flex-col w-full ${index !== 2 ? "md:border-r border-secondary" : ""}`}
                     >
                       <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
-                      <div className="flex-1 border-t border-black">
+                      <div className="flex-1 border-t border-secondary">
                         <TabSection
                           key={`${columnName}-${sectionName}`}
                           columnName={columnName}
@@ -346,11 +346,11 @@ const SearchPageConf = ({ siteData }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 mt-5  w-full gap-4 mx-auto border-black rounded-xl">
+        <div className="flex flex-col gap-4 mt-5  w-full gap-4 mx-auto border-secondary rounded-xl">
           {["columnOne", "columnTwo"].map((columnName) => (
             <div key={columnName} className="flex flex-col w-full">
               <h2 className="font-semibold hidden px-2 py-2">{formatName(columnName)}</h2>
-              <div className="flex-1 border rounded-xl border-black">
+              <div className="flex-1 border rounded-xl border-secondary">
                 {["SuggestedTerms", "sectionOne", "sectionTwo"]
                   .filter((sectionName) => {
                     // Show only "SuggestedTerms" in columnOne

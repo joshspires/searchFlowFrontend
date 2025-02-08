@@ -55,7 +55,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="p-6 bg-white shadow-md rounded-lg w-full max-w-sm">
+      <div className="p-6 bg-white shadow-md rounded w-full max-w-sm">
         <h1 className="text-center text-xl font-bold text-gray-900 mb-6">
           Reset Your Password
         </h1>
@@ -94,7 +94,7 @@ const ResetPassword = () => {
           </div>
           <button
             type="submit"
-            className={`w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 ${
+            className={`w-full bg-primary text-white py-3 rounded bg-secondary transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={isLoading}

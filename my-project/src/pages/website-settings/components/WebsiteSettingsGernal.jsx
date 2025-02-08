@@ -32,19 +32,13 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
   const handleToggleChange = (field) => {
     setValue(field, !getValues(field), { shouldDirty: true });
   };
-  //   const codeSnippet = `
-  // <script 
-  // defer src="https://searchflow-ed703fb051f2.herokuapp.com/widget.js" 
-  // data-user-id="${userId}" 
-  // data-site-id="${siteId}">
-  // </script>`;
 
   const codeSnippet = `<script defer src="https://dash.searchflow.app/widget.js" data-user-id="${userId}" data-site-id="${siteId}"></script>`;
 
   return (
     <div className="flex flex-col md:flex-row gap-4 mx-2 mb-4">
       {/* Left Section */}
-      <div className="flex-1 bg-white border border-black rounded-xl p-6">
+      <div className="flex-1 bg-white border border-secondary rounded p-6">
         <h2 className="text-lg font-semibold mb-4">
           Select what appears in search
         </h2>
@@ -385,12 +379,12 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 bg-white rounded-xl p-6 border border-black">
-        <h2 className="text-lg font-semibold mb-4">Search engine settings</h2>
+      <div className="flex-1 bg-white rounded p-6 border border-secondary">
+        <h2 className="text-lg font-semibold mb-4">Setup instructions</h2>
         <div className="space-y-4">
           {/* Toggles */}
-          <div className="flex flex-col gap-4">
-            {/* Fuzzy Search Toggle */}
+          {/* <div className="flex flex-col gap-4">
+            Fuzzy Search Toggle
             <label className="relative rounded-full inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -408,9 +402,9 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
                 ></div>
               </div>
               <span className="ml-3 text-md font-medium">Fuzzy search</span>
-            </label>
+            </label>*/}
 
-            {/* Instant Search Widget Toggle */}
+            {/* Instant Search Widget Toggle
             <label className="relative rounded-full inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -430,24 +424,24 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
               <span className="ml-3 text-md font-medium">Instant search widget</span>
             </label>
 
-          </div>
+          </div> */}
 
           <div>
             <h3 className="text-md font-medium mb-2">
-              Add this snippet into the &lt;head&gt; section.
+              1. Add the snippet below to the &lt;head&gt; section in Webflow.
             </h3>
             <div className="relative">
               <textarea
                 ref={textAreaRef} // Set reference for textarea
-                className="w-full border min-h-[130px] h-[180px] outline-none border-black rounded-lg p-2 text-sm resize-none z-20"
+                className="w-full border min-h-[100px] h-[100px] outline-none border-secondary rounded p-2 text-sm resize-none z-20"
                 rows={2}
-                placeholder="Enter your code snippet here..."
+                placeholder="Loading..."
                 value={codeSnippet}
                 readOnly
               ></textarea>
               <button
                 onClick={handleCopy}
-                className="absolute top-1 right-1 px-2 py-1 bg-gray-500 text-white rounded-md"
+                className="absolute top-1 right-1 px-2 py-1 bg-gray-600 text-white rounded"
               >
                 Copy
               </button>
