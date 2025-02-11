@@ -137,11 +137,11 @@ const SearchWidgetConf = ({ siteData }) => {
       <div className="flex-1">
         <h2 className="text-lg font-semibold mb-4">Instant Search Widget</h2>
         <div className="space-y-6">
-          <div className="flex gap-4 mt-5  mx-auto border-secondary rounded-xl">
+        <h2 className="text-md font-semibold mb-4">Content ordering</h2>
+          <div className="flex gap-4 mt-5  mx-auto border-secondary rounded">
             {["columnOne", "columnTwo"].map((columnName) => (
               <div key={columnName} className="flex flex-col w-full">
-                <h2 className="font-semibold px-2 py-2">{formatName(columnName)}</h2>
-                <div className="flex-1 border rounded-xl border-secondary">
+                <div className="flex-1 border rounded border-secondary">
                   {["sectionOne", "sectionTwo"]
                     .filter((sectionName) => columnName === "columnTwo" || sectionName === "sectionOne")
                     .map((sectionName) => (

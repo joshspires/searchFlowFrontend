@@ -217,14 +217,14 @@ const SearchPageConf = ({ siteData }) => {
 
 
   return (
-    <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-secondary justify-between rounded-xl m-2">
+    <div className="flex flex-col gap-2 p-6 md:gap-10 lg:flex-row border border-secondary justify-between rounded m-2">
       {/* left section */}
       <div className="w-full">
-        <h2 className="text-lg font-bold mb-4">Search results page</h2>
+        <h2 className="text-lg font-semibold mb-4">Search results page</h2>
         <div className="space-y-6 mx-2 mt-2">
           <div>
-            <h3 className="text-md font-medium mb-2">Search results content ordering</h3>
-            <div className="flex flex-col mt-5 w-full mx-auto border-secondary rounded-xl">
+            <h3 className="text-md font-medium mb-2">Content ordering</h3>
+            <div className="flex flex-col mt-5 w-full mx-auto border-secondary rounded">
               {/* Tabs Section */}
               <div className="flex flex-col md:flex-row gap-1 md:gap-0 text-center  justify-between border-secondary">
                 {["tabOne", "tabTwo", "tabThree"].map((tabNo) => (
@@ -238,7 +238,7 @@ const SearchPageConf = ({ siteData }) => {
               </div>
 
               {/* Main Content Section */}
-              <div className="flex flex-wrap md:flex-nowrap w-full border rounded-xl border-secondary">
+              <div className="flex flex-wrap md:flex-nowrap w-full border rounded border-secondary">
                 {/* if we have to drag and drop full system then 
                 {["columnOne", "columnTwo", "columnThree"].map((columnName, index) => { */}
                 {/* else for ordering change */}
@@ -274,7 +274,7 @@ const SearchPageConf = ({ siteData }) => {
       {/* Right section */}
       <div className="md:mt-6 flex flex-col gap-2 mx-2 md:ml-0 w-full">
         <div className="mb-3 flex flex-col gap-3">
-          <h3 className="text- font-semibold mb-1">No results content ordering</h3>
+          <h3 className="text- font-semibold mb-1">Settings</h3>
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -320,64 +320,9 @@ const SearchPageConf = ({ siteData }) => {
               }}
             />
             <label htmlFor="suggestedSearchTerms" className="text-sm">
-              Suggested search terms
+              Show suggested search terms when there are no results
             </label>
           </div>
-
-
-          <h3 className="text- font-semibold mb-1">Search results content ordering</h3>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              className="accent-black"
-              id="popularSearchTerms"
-              checked={useWatch({ control, name: "searchResultPageCustomization.popularSearchTerms" }) || false}  // Ensure it's boolean
-              onChange={(e) =>
-                setValue(
-                  "searchResultPageCustomization.popularSearchTerms",
-                  e.target.checked,
-                  { shouldValidate: true, shouldDirty: true }
-                )
-              }
-            />
-            <label htmlFor="popularSearchTerms" className="text-sm">
-              Use the most popular searches for search terms
-            </label>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 mt-5  w-full gap-4 mx-auto border-secondary rounded-xl">
-          {["columnOne", "columnTwo"].map((columnName) => (
-            <div key={columnName} className="flex flex-col w-full">
-              <h2 className="font-semibold hidden px-2 py-2">{formatName(columnName)}</h2>
-              <div className="flex-1 border rounded-xl border-secondary">
-                {["SuggestedTerms", "sectionOne", "sectionTwo"]
-                  .filter((sectionName) => {
-                    // Show only "SuggestedTerms" in columnOne
-                    if (columnName === "columnOne") {
-                      return sectionName === "SuggestedTerms";
-                    }
-                    // Show "sectionOne" and "sectionTwo" in columnTwo
-                    if (columnName === "columnTwo") {
-                      return sectionName === "sectionOne" || sectionName === "sectionTwo";
-                    }
-                    return false;
-                  })
-                  .map((sectionName) => (
-                    <Section
-                      key={`${columnName}-${sectionName}`}
-                      columnName={columnName}
-                      sectionName={sectionName}
-                      items={getItems(columnName, sectionName)}
-                      moveItem={moveItem}
-                      getDisplayName={getDisplayName}
-                      dataSources={dataSources}
-                    />
-                  ))}
-              </div>
-            </div>
-          ))}
-
         </div>
       </div>
     </div>

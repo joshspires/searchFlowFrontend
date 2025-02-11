@@ -447,6 +447,27 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
               </button>
             </div>
           </div>
+          <div>
+            <h3 className="text-md font-medium mb-2">
+              2. Add the snippet below to the element on your website you want to oepn the search widget.
+            </h3>
+            <div className="relative">
+              <textarea
+                ref={textAreaRef} // Set reference for textarea
+                className="w-full border outline-none border-secondary rounded p-2 text-sm resize-none z-20"
+                rows={2}
+                placeholder="Loading..."
+                value="searchflow-open"
+                readOnly
+              ></textarea>
+              <button
+                onClick={handleCopy}
+                className="absolute top-1 right-1 px-2 py-1 bg-gray-600 text-white rounded"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

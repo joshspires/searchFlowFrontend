@@ -136,7 +136,7 @@ const NoResultsLayoutSettings = ({ siteData }) => {
     <div className="w-full space-y-6">
       {/* Layout Configuration */}
       <div className="rounded">
-        <h2 className="text-lg font-semibold mb-4">Default/No Results Layout</h2>
+        <h2 className="text-md font-semibold mb-4">Settings</h2>
         <div className="space-y-2 text-sm">
          {/* <div>
             <input
@@ -215,12 +215,12 @@ const NoResultsLayoutSettings = ({ siteData }) => {
               }}
               className="mr-2 accent-black"
             />
-            <label htmlFor="searchTerms">Suggested search terms</label>
+            <label htmlFor="searchTerms">Show suggested search terms when there are no results</label>
           </div>
         </div>
       </div>
 
-      {/* Additional Settings */}
+      {/* Additional Settings
       <div className="space-y-4">
         <h2 className="text-lg font-semibold mb-4">Default/No Results Ordering</h2>
         <div>
@@ -236,9 +236,9 @@ const NoResultsLayoutSettings = ({ siteData }) => {
             </label>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      {/* Columns Preview */}
+      {/* Columns Preview
       <div className="flex gap-4 mt-5 mx-auto border-secondary rounded">
         {["columnOne", "columnTwo"].map((columnName) => (
           <div key={columnName} className="flex flex-col w-full">
@@ -268,7 +268,7 @@ const NoResultsLayoutSettings = ({ siteData }) => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -344,7 +344,7 @@ const DraggableItem = ({ item, source, getDisplayName, dataSources }) => {
 
     <div
       ref={drag}
-      className="flex py-1 items-center gap-1 text-sm cursor-move px-2 "
+      className="flex py-1 items-center gap-1 text-sm cursor-move px-2"
     >
       <svg
         width="14"
