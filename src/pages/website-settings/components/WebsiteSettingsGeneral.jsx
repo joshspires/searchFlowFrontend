@@ -405,7 +405,7 @@ const WebsiteSettingsGeneral = ({ siteData, siteId }) => {
           </div>
           <div>
             <h3 className="text-md font-medium mb-2">
-              2. Add the snippet below to the element on your website you want to oepn the search widget.
+              2. Add the snippet below to the element on your website you want to open the search widget.
             </h3>
             <div className="relative">
               <textarea
