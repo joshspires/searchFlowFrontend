@@ -3,7 +3,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { useSelector } from "react-redux";
 // import { collections } from "../../../../demo";
 
-const WebsiteSettingsGernal = ({ siteData, siteId }) => {
+const WebsiteSettingsGeneral = ({ siteData, siteId }) => {
   const { register, control, getValues, setValue, watch } = useFormContext();
   const { siteCollections, siteProducts } = siteData;
   const userId = useSelector((state) => state.auth.userInfo?.data?.userId);
@@ -382,50 +382,6 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
       <div className="flex-1 bg-white rounded p-6 border border-secondary">
         <h2 className="text-lg font-semibold mb-4">Setup instructions</h2>
         <div className="space-y-4">
-          {/* Toggles */}
-          {/* <div className="flex flex-col gap-4">
-            Fuzzy Search Toggle
-            <label className="relative rounded-full inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                id="fuzzySearch"
-                className="sr-only peer"
-                {...register("searchEngineSettings.fuzzySearch")}
-                checked={!!fuzzySearch} // Ensure a boolean value
-                onChange={() => handleToggleChange("searchEngineSettings.fuzzySearch")}
-              />
-              <div
-                className={`w-12 h-6 ${fuzzySearch ? "bg-green-500" : "bg-gray-300"} rounded-full transition`}
-              >
-                <div
-                  className={`w-6 h-6 bg-white rounded-full shadow transform transition ${fuzzySearch ? "translate-x-6" : "translate-x-0"}`}
-                ></div>
-              </div>
-              <span className="ml-3 text-md font-medium">Fuzzy search</span>
-            </label>*/}
-
-            {/* Instant Search Widget Toggle
-            <label className="relative rounded-full inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                id="instantSearch"
-                className="sr-only peer"
-                {...register("searchEngineSettings.instantSearchWidget")}
-                checked={!!instantSearchWidget} // Ensure a boolean value
-                onChange={() => handleToggleChange("searchEngineSettings.instantSearchWidget")}
-              />
-              <div
-                className={`w-12 h-6 ${instantSearchWidget ? "bg-green-500" : "bg-gray-300"} rounded-full transition`}
-              >
-                <div
-                  className={`w-6 h-6 bg-white rounded-full shadow transform transition ${instantSearchWidget ? "translate-x-6" : "translate-x-0"}`}
-                ></div>
-              </div>
-              <span className="ml-3 text-md font-medium">Instant search widget</span>
-            </label>
-
-          </div> */}
-
           <div>
             <h3 className="text-md font-medium mb-2">
               1. Add the snippet below to the &lt;head&gt; section in Webflow.
@@ -474,4 +430,4 @@ const WebsiteSettingsGernal = ({ siteData, siteId }) => {
   );
 };
 
-export default WebsiteSettingsGernal;
+export default WebsiteSettingsGeneral;

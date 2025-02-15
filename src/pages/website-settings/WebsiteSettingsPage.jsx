@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "../../Layout/MainLayout";
-import WebsiteSettingsGernal from "./components/WebsiteSettingsGernal";
+import WebsiteSettingsGeneral from "./components/WebsiteSettingsGeneral";
 import SearchWidgetConf from "./components/SearchWidgetConf";
-import SearchPageConf from "./components/SearchPageConf";
 import { FormProvider, useForm } from "react-hook-form";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -89,9 +88,8 @@ const WebsiteSettingsPage = () => {
         ) : (
           <FormProvider {...form}>
             <DndProvider backend={HTML5Backend}>
-              <WebsiteSettingsGernal siteData={siteData} siteId={id} />
+              <WebsiteSettingsGeneral siteData={siteData} siteId={id} />
               <SearchWidgetConf siteData={siteData} />
-              <SearchPageConf siteData={siteData} />
             </DndProvider>
           </FormProvider>
         )}
